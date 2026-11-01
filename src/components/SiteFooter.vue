@@ -1,5 +1,5 @@
 <script setup>
-import { brand, contact, live, delivered, disclaimer } from '../data/company'
+import { brand, contact, live, disclaimer } from '../data/company'
 import AppIcon from './AppIcon.vue'
 
 const year = new Date().getFullYear()
@@ -9,10 +9,10 @@ const year = new Date().getFullYear()
   <footer class="ft" data-nav="dark">
     <div class="shell ft__top">
       <div class="ft__brand">
-        <router-link to="/" class="ft__mark" aria-label="Abha Engicon — home">
+        <a href="#top" class="ft__mark" aria-label="Abha Engicon — top of page">
           <span class="ft__abha">ABHA</span>
           <span class="ft__sub">ENGICON</span>
-        </router-link>
+        </a>
         <p class="ft__tag">{{ brand.tagline }}</p>
         <a :href="`mailto:${contact.email}`" class="ft__mail">{{ contact.email }}</a>
       </div>
@@ -20,7 +20,7 @@ const year = new Date().getFullYear()
       <div class="ft__cols">
         <div class="ft__col">
           <p class="ft__h">Now selling</p>
-          <a v-for="p in live" :key="p.slug" :href="p.href" target="_blank" rel="noopener" class="ft__link">
+          <a v-for="p in live" :key="p.slug" :href="p.href" class="ft__link">
             {{ p.name }}
             <AppIcon name="arrow-up-right" :size="11" />
           </a>
@@ -28,9 +28,9 @@ const year = new Date().getFullYear()
 
         <div class="ft__col">
           <p class="ft__h">Company</p>
-          <router-link to="/projects" class="ft__link">All projects</router-link>
-          <router-link to="/about" class="ft__link">About Abha Engicon</router-link>
-          <router-link to="/contact" class="ft__link">Contact</router-link>
+          <a href="#projects" class="ft__link">All projects</a>
+          <a href="#company" class="ft__link">About Abha Engicon</a>
+          <a href="#contact" class="ft__link">Contact</a>
         </div>
 
         <div class="ft__col">

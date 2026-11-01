@@ -1,19 +1,52 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
 import AppIcon from './AppIcon.vue'
+import { asset } from '../utils/asset'
+import { brand } from '../data/company'
 
-const route = useRoute()
 const solid = ref(false)
 const open = ref(false)
 const progress = ref(0)
 const invert = ref(false)
+const active = ref('')
 
+// Every item is an anchor on this page. Nothing here navigates away.
 const links = [
-  { to: '/projects', label: 'Projects' },
-  { to: '/about', label: 'The company' },
-  { to: '/contact', label: 'Contact' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'company', label: 'The company' },
+  { id: 'contact', label: 'Contact' },
 ]
+
+const reduced = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+function navOffset() {
+  const bar = document.querySelector('.nav__bar')
+  return bar ? bar.getBoundingClientRect().height : 78
+}
+
+function setHash(id) {
+  try {
+    history.replaceState(null, '', id ? `#${id}` : location.pathname + location.search)
+  } catch {
+    /* ignore — some embedded contexts block this */
+  }
+}
+
+function go(id) {
+  open.value = false
+  const el = document.getElementById(id)
+  if (!el) return
+  const top = el.getBoundingClientRect().top + window.scrollY - navOffset() + 1
+  window.scrollTo({ top, behavior: reduced() ? 'auto' : 'smooth' })
+  setHash(id)
+}
+
+function toTop() {
+  open.value = false
+  window.scrollTo({ top: 0, behavior: reduced() ? 'auto' : 'smooth' })
+  setHash('')
+}
 
 function onScroll() {
   const y = window.scrollY
@@ -21,13 +54,19 @@ function onScroll() {
   const h = document.documentElement.scrollHeight - window.innerHeight
   progress.value = h > 0 ? Math.min(1, y / h) : 0
 
-  // Flip the bar to sand-on-ink while it sits over a dark section.
-  const probe = 42
-  let dark = false
-  document.querySelectorAll('[data-nav="dark"]').forEach((el) => {
-    const r = el.getBoundingClientRect()
-    if (r.top <= probe && r.bottom >= probe) dark = true
-  })
+  // Flip the bar to sand-on-ink while it sits over a dark section. Sample a
+  // little below the bar's own edge, not at its middle: the bar is opaque, so
+  // what matters is the band of page the eye sees directly under it.
+  const probe = navOffset() + 36
+  // Focus mode paints the film edge to edge, so the bar is on dark whatever
+  // section happens to be under it.
+  let dark = document.body.classList.contains('hero-cinema')
+  if (!dark) {
+    document.querySelectorAll('[data-nav="dark"]').forEach((el) => {
+      const r = el.getBoundingClientRect()
+      if (r.top <= probe && r.bottom >= probe) dark = true
+    })
+  }
   invert.value = dark
 }
 
@@ -35,15 +74,30 @@ function onKey(e) {
   if (e.key === 'Escape') open.value = false
 }
 
-watch(() => route.fullPath, () => {
-  open.value = false
-})
-
 watch(open, (v) => {
   document.body.style.overflow = v ? 'hidden' : ''
 })
 
+let spy = null
 let ro = null
+
+function buildSpy() {
+  if (spy) spy.disconnect()
+  const els = links.map((l) => document.getElementById(l.id)).filter(Boolean)
+  if (!els.length || !('IntersectionObserver' in window)) return
+  spy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          active.value = e.target.id
+          setHash(e.target.id)
+        }
+      })
+    },
+    { rootMargin: '-45% 0px -50% 0px' }
+  )
+  els.forEach((el) => spy.observe(el))
+}
 
 onMounted(() => {
   // The first measurement happens before CSS and webfonts have settled, which
@@ -56,19 +110,24 @@ onMounted(() => {
   window.addEventListener('scroll', onScroll, { passive: true })
   window.addEventListener('resize', onScroll, { passive: true })
   window.addEventListener('keydown', onKey)
+  window.addEventListener('abha:nav', onScroll)
 
   // Late-loading images change the page height, which moves every section.
   if ('ResizeObserver' in window) {
     ro = new ResizeObserver(onScroll)
     ro.observe(document.body)
   }
+
+  setTimeout(buildSpy, 400)
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
   window.removeEventListener('resize', onScroll)
   window.removeEventListener('keydown', onKey)
+  window.removeEventListener('abha:nav', onScroll)
   if (ro) ro.disconnect()
+  if (spy) spy.disconnect()
   document.body.style.overflow = ''
 })
 </script>
@@ -76,19 +135,43 @@ onUnmounted(() => {
 <template>
   <header class="nav" :class="{ 'nav--solid': solid, 'nav--open': open, 'nav--invert': invert }">
     <div class="nav__bar">
-      <router-link to="/" class="mark" aria-label="Abha Engicon — home">
-        <span class="mark__top">ABHA</span>
-        <span class="mark__sub">ENGICON</span>
-      </router-link>
+      <a
+        href="#top"
+        class="mark"
+        aria-label="Abha Engicon — top of page"
+        @click.prevent="toTop"
+      >
+        <img
+          class="mark__emblem"
+          :src="asset(invert ? 'images/brand/emblem-cream.png' : 'images/brand/emblem-ink.png')"
+          alt=""
+          width="419"
+          height="460"
+          aria-hidden="true"
+        />
+        <span class="mark__text">
+          <span class="mark__top">ABHA</span>
+          <span class="mark__sub">ENGICON</span>
+        </span>
+      </a>
 
       <nav class="nav__links" aria-label="Primary">
-        <router-link v-for="l in links" :key="l.to" :to="l.to" class="nav__link">
+        <a
+          v-for="l in links"
+          :key="l.id"
+          :href="`#${l.id}`"
+          class="nav__link"
+          :class="{ 'is-active': active === l.id }"
+          @click.prevent="go(l.id)"
+        >
           {{ l.label }}
-        </router-link>
+        </a>
       </nav>
 
       <div class="nav__end">
-        <router-link to="/contact" class="btn btn--sm nav__cta">Book a visit</router-link>
+        <a href="#contact" class="btn btn--sm nav__cta" @click.prevent="go('contact')">
+          Book a visit
+        </a>
         <button
           class="burger"
           :aria-expanded="open"
@@ -102,35 +185,43 @@ onUnmounted(() => {
     </div>
 
     <div class="nav__progress" :style="{ transform: `scaleX(${progress})` }" aria-hidden="true"></div>
+  </header>
 
-    <div id="nav-drawer" class="drawer" :class="{ 'drawer--open': open }">
-      <div class="drawer__inner">
-        <nav class="drawer__links" aria-label="Mobile">
-          <router-link to="/" class="drawer__link">
-            <span class="drawer__num">01</span>
-            Home
-          </router-link>
-          <router-link v-for="(l, i) in links" :key="l.to" :to="l.to" class="drawer__link">
-            <span class="drawer__num">0{{ i + 2 }}</span>
-            {{ l.label }}
-          </router-link>
-        </nav>
+  <!-- Outside the header on purpose: .nav--solid carries a backdrop-filter,
+       which makes the bar a containing block for fixed children. -->
+  <div id="nav-drawer" class="drawer" :class="{ 'drawer--open': open }">
+    <div class="drawer__inner">
+      <nav class="drawer__links" aria-label="Mobile">
+        <a href="#top" class="drawer__link" @click.prevent="toTop">
+          <span class="drawer__num">01</span>
+          Home
+        </a>
+        <a
+          v-for="(l, i) in links"
+          :key="l.id"
+          :href="`#${l.id}`"
+          class="drawer__link"
+          @click.prevent="go(l.id)"
+        >
+          <span class="drawer__num">0{{ i + 2 }}</span>
+          {{ l.label }}
+        </a>
+      </nav>
 
-        <p class="drawer__tag">
-          Two addresses open.<br />Ten already lived in.
-        </p>
+      <p class="drawer__tag">{{ brand.tagline }}</p>
 
-        <div class="drawer__foot">
-          <a :href="'tel:+919461075805'" class="drawer__phone">
-            <AppIcon name="phone" :size="15" />
-            +91 94610 75805
-          </a>
-          <a href="mailto:abhaengicon@gmail.com" class="drawer__mail">abhaengicon@gmail.com</a>
-          <router-link to="/contact" class="btn drawer__cta">Book a site visit</router-link>
-        </div>
+      <div class="drawer__foot">
+        <a :href="'tel:+919461075805'" class="drawer__phone">
+          <AppIcon name="phone" :size="15" />
+          +91 94610 75805
+        </a>
+        <a href="mailto:abhaengicon@gmail.com" class="drawer__mail">abhaengicon@gmail.com</a>
+        <a href="#contact" class="btn drawer__cta" @click.prevent="go('contact')">
+          Book a site visit
+        </a>
       </div>
     </div>
-  </header>
+  </div>
 </template>
 
 <style scoped>
@@ -147,7 +238,7 @@ onUnmounted(() => {
   box-shadow: 0 1px 0 var(--line);
 }
 
-/* Over the dark portfolio band the bar flips to sand-on-ink. */
+/* Over a dark band the bar flips to sand-on-ink. */
 .nav--invert {
   background: rgba(20, 20, 24, 0.86);
   box-shadow: 0 1px 0 rgba(243, 235, 221, 0.12);
@@ -166,7 +257,7 @@ onUnmounted(() => {
 }
 
 .nav--invert .nav__link:hover,
-.nav--invert .nav__link.router-link-active {
+.nav--invert .nav__link.is-active {
   color: var(--sand-50);
 }
 
@@ -202,10 +293,23 @@ onUnmounted(() => {
 
 /* ------------------------------------------------------------- wordmark --- */
 .mark {
+  display: flex;
+  align-items: center;
+  gap: 0.62rem;
+  flex-shrink: 0;
+}
+
+.mark__emblem {
+  width: auto;
+  height: 30px;
+  flex-shrink: 0;
+  transition: opacity 0.4s var(--ease);
+}
+
+.mark__text {
   display: grid;
   gap: 0.18rem;
   line-height: 1;
-  flex-shrink: 0;
 }
 
 .mark__top {
@@ -261,12 +365,12 @@ onUnmounted(() => {
 }
 
 .nav__link:hover,
-.nav__link.router-link-active {
+.nav__link.is-active {
   color: var(--ink-900);
 }
 
 .nav__link:hover::after,
-.nav__link.router-link-active::after {
+.nav__link.is-active::after {
   transform: scaleX(1);
 }
 
@@ -314,6 +418,7 @@ onUnmounted(() => {
 .drawer {
   position: fixed;
   inset: var(--nav-h) 0 0 0;
+  z-index: 99;
   background: var(--sand-100);
   clip-path: inset(0 0 100% 0);
   transition: clip-path 0.62s var(--ease-out);

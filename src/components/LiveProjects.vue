@@ -1,19 +1,242 @@
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
 import { asset } from '../utils/asset'
-import { live } from '../data/company'
+import { live, counts, word } from '../data/company'
+import { askAbout } from '../data/enquiry'
 import AppIcon from './AppIcon.vue'
+
+/**
+ * Cross-site hand-off, in both directions.
+ *
+ * Forward: clicking a banner pushes it — the card's photograph grows out of
+ * its slot to fill the screen while the photo itself zooms in, and the rest of
+ * the page dims and drifts back behind it. The navigation happens underneath.
+ *
+ * Back: the browser restores this page (often from the back/forward cache,
+ * which is why a naive overlay used to come back frozen over the page), and
+ * the same move plays in reverse — the cover shrinks back onto the card it
+ * came from. The project is remembered in sessionStorage, so it survives both
+ * a cache restore and a cold reload.
+ */
+const KEY = 'abha:handoff'
+
+const hand = ref(null)
+const handOpen = ref(false)
+const handGone = ref(false)
+
+let timers = []
+const later = (fn, ms) => timers.push(setTimeout(fn, ms))
+const clearTimers = () => {
+  timers.forEach(clearTimeout)
+  timers = []
+}
+
+const reduced = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+const viewportRect = () => ({
+  left: 0,
+  top: 0,
+  width: window.innerWidth,
+  height: window.innerHeight,
+})
+
+function rectOf(el) {
+  const r = el.getBoundingClientRect()
+  return { left: r.left, top: r.top, width: r.width, height: r.height }
+}
+
+function cardMedia(slug) {
+  const card = document.querySelector(`.dev[data-slug="${slug}"]`)
+  return card ? card.querySelector('.dev__media') : null
+}
+
+// The page recedes behind the cover; see style.css.
+function setReceding(on) {
+  document.body.classList.toggle('is-handing', on)
+}
+
+/* ---------------------------------------------------------------- forward --- */
+function handoffTo(ev, p) {
+  // Never hijack a new-tab / new-window intent.
+  if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey || ev.button === 1) return
+  ev.preventDefault()
+  if (hand.value) return
+
+  clearTimers()
+  const media = cardMedia(p.slug)
+
+  hand.value = { name: p.name, img: asset(p.image), rect: media ? rectOf(media) : viewportRect() }
+  handOpen.value = false
+  handGone.value = false
+  setReceding(true)
+
+  // Remember the destination — and where on this page the visitor was — so
+  // Back can play the same move in reverse.
+  try {
+    sessionStorage.setItem(KEY, JSON.stringify({ slug: p.slug, y: Math.round(window.scrollY) }))
+  } catch {
+    /* private mode — the forward transition still works */
+  }
+
+  requestAnimationFrame(() => requestAnimationFrame(() => (handOpen.value = true)))
+
+  later(() => window.location.assign(p.href), reduced() ? 0 : 720)
+
+  // Safety net: if the navigation never happens (offline, blocked, a browser
+  // that refuses the jump), never leave the cover stuck over the page.
+  later(() => {
+    handGone.value = true
+    setReceding(false)
+    later(() => {
+      hand.value = null
+      handOpen.value = false
+      handGone.value = false
+    }, 300)
+  }, 6000)
+}
+
+/* ---------------------------------------------------------------- reverse --- */
+let reversing = false
+
+function startReverse(pending) {
+  const p = live.find((x) => x.slug === pending.slug)
+  if (!p || reversing) return
+  reversing = true
+  clearTimers()
+
+  // Put the page back where the visitor left it ourselves, instantly, before
+  // anything else — see the inline script in index.html.
+  if (typeof pending.y === 'number') window.scrollTo(0, pending.y)
+
+  // Cover the page in its expanded state straight away, so the visitor never
+  // sees a flash of the parent before the move begins…
+  hand.value = { name: p.name, img: asset(p.image), rect: viewportRect() }
+  handOpen.value = true
+  handGone.value = false
+  setReceding(true)
+
+  // …then let layout settle and shrink it back onto the card it came from.
+  waitForScrollSettle(() => {
+    const media = cardMedia(pending.slug)
+    const rect = media ? rectOf(media) : null
+    const onScreen = rect && rect.top < window.innerHeight - 40 && rect.top + rect.height > 40
+
+    // If the visitor came back to a different part of the page, there is no
+    // card to shrink onto — fade the cover instead of flying off to a corner.
+    if (!onScreen) {
+      setReceding(false)
+      handOpen.value = false
+      finishReverse(reduced() ? 0 : 340)
+      return
+    }
+
+    hand.value = { ...hand.value, rect }
+    requestAnimationFrame(() => {
+      handOpen.value = false
+      setReceding(false)
+    })
+    finishReverse(reduced() ? 0 : 700)
+  })
+}
+
+function finishReverse(delay) {
+  later(() => {
+    handGone.value = true
+    later(() => {
+      hand.value = null
+      handOpen.value = false
+      handGone.value = false
+      reversing = false
+      // Hand scrolling back to the stylesheet and the browser.
+      document.documentElement.style.scrollBehavior = ''
+      if ('scrollRestoration' in history) history.scrollRestoration = 'auto'
+    }, 280)
+  }, delay)
+}
+
+function waitForScrollSettle(cb) {
+  let last = window.scrollY
+  let stable = 0
+  let frames = 0
+  const tick = () => {
+    frames += 1
+    if (window.scrollY === last) stable += 1
+    else {
+      stable = 0
+      last = window.scrollY
+    }
+    // A few still frames, or give up after ~1s and use whatever we have.
+    if ((stable > 2 && frames > 3) || frames > 60) cb()
+    else requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+}
+
+function takePending() {
+  let raw = ''
+  try {
+    raw = sessionStorage.getItem(KEY) || ''
+    if (raw) sessionStorage.removeItem(KEY)
+  } catch {
+    /* ignore */
+  }
+  if (!raw) return null
+  try {
+    const parsed = JSON.parse(raw)
+    if (parsed && parsed.slug) return parsed
+  } catch {
+    /* older plain-string value */
+  }
+  return { slug: raw, y: null }
+}
+
+function onPageShow(e) {
+  // Restored from the back/forward cache: the old cover is still mounted, so
+  // tear the state down before replaying the move.
+  if (!e.persisted) return
+  clearTimers()
+  reversing = false
+  hand.value = null
+  handOpen.value = false
+  handGone.value = false
+  setReceding(false)
+  const pending = takePending()
+  if (pending) requestAnimationFrame(() => startReverse(pending))
+  else {
+    document.documentElement.style.scrollBehavior = ''
+    if ('scrollRestoration' in history) history.scrollRestoration = 'auto'
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('pageshow', onPageShow)
+  const pending = takePending()
+  if (pending) requestAnimationFrame(() => startReverse(pending))
+  else {
+    // No pending hand-off: give smooth scrolling straight back.
+    document.documentElement.style.scrollBehavior = ''
+    if ('scrollRestoration' in history) history.scrollRestoration = 'auto'
+  }
+})
+
+onUnmounted(() => {
+  window.removeEventListener('pageshow', onPageShow)
+  clearTimers()
+  setReceding(false)
+})
 </script>
 
 <template>
-  <section id="live" class="live section">
+  <section id="projects" class="live section">
     <div class="shell">
       <header class="live__head">
         <div v-reveal>
-          <span class="eyebrow">Now selling</span>
-          <h2 class="live__title">Two addresses, open today.</h2>
+          <span class="eyebrow">Now selling · {{ counts.live }} live</span>
+          <h2 class="live__title">{{ word(counts.live) }} addresses, open today.</h2>
         </div>
         <p class="lede live__lede" v-reveal="80">
-          Both are in Biharsharif, both low-rise, both built to the same specification. Each has its
+          Every one is in Biharsharif, low-rise and built to the same specification. Each has its
           own site — floor plans, unit areas, walkthroughs and the sales desk.
         </p>
       </header>
@@ -24,14 +247,14 @@ import AppIcon from './AppIcon.vue'
           :key="p.slug"
           class="dev"
           :class="{ 'dev--flip': i % 2 === 1 }"
+          :data-slug="p.slug"
           v-reveal="i * 90"
         >
           <a
             class="dev__media"
             :href="p.href"
-            target="_blank"
-            rel="noopener"
             :aria-label="`Open the ${p.name} website`"
+            @click="handoffTo($event, p)"
           >
             <img :src="asset(p.image)" :alt="`${p.name} — building elevation`" loading="lazy" decoding="async" />
             <span class="dev__open">
@@ -60,14 +283,47 @@ import AppIcon from './AppIcon.vue'
               </div>
             </dl>
 
-            <a class="dev__cta" :href="p.href" target="_blank" rel="noopener">
-              Visit the {{ p.name }} site
-              <AppIcon name="arrow-up-right" :size="14" />
-            </a>
+            <div class="dev__actions">
+              <a class="dev__cta" :href="p.href" @click="handoffTo($event, p)">
+                Visit the {{ p.name }} site
+                <AppIcon name="arrow-right" :size="14" />
+              </a>
+              <button class="dev__ask" type="button" @click="askAbout(p.name)">
+                Enquire about this
+              </button>
+            </div>
           </div>
         </article>
       </div>
     </div>
+
+    <!-- Teleported out of <main> so the page behind it can be scaled and
+         dimmed without dragging this fixed overlay along. -->
+    <Teleport to="body">
+      <div
+        v-if="hand"
+        class="hand"
+        :class="{ 'is-open': handOpen, 'is-gone': handGone }"
+        aria-hidden="true"
+        :style="{
+          '--hl': hand.rect.left + 'px',
+          '--ht': hand.rect.top + 'px',
+          '--hw': hand.rect.width + 'px',
+          '--hh': hand.rect.height + 'px',
+        }"
+      >
+        <div class="hand__scrim"></div>
+
+        <div class="hand__frame">
+          <img :src="hand.img" alt="" />
+          <div class="hand__veil"></div>
+          <div class="hand__caption">
+            <span class="hand__eyebrow">Abha Engicon</span>
+            <span class="hand__name">{{ hand.name }}</span>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </section>
 </template>
 
@@ -278,12 +534,18 @@ import AppIcon from './AppIcon.vue'
   font-feature-settings: 'lnum' 1;
 }
 
+.dev__actions {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
 .dev__cta {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  align-self: flex-start;
-  margin-top: 1.5rem;
   padding-bottom: 0.3rem;
   border-bottom: 1px solid var(--ink-900);
   font-size: 0.66rem;
@@ -302,7 +564,152 @@ import AppIcon from './AppIcon.vue'
 }
 
 .dev__cta:hover svg {
-  transform: translate(2px, -2px);
+  transform: translateX(2px);
+}
+
+.dev__ask {
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  transition: color 0.35s var(--ease), border-color 0.35s var(--ease);
+}
+
+.dev__ask:hover {
+  color: var(--ink-900);
+  border-color: var(--line);
+}
+
+/* ------------------------------------------------------------ hand-off --- */
+/* The banner, lifted out of the grid and pushed at the viewer: the frame grows
+   to the viewport while the photograph zooms in, and the page dims behind it.
+   The same transition runs backwards when the visitor comes back. */
+.hand {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  pointer-events: auto;
+  transition: opacity 0.26s var(--ease);
+}
+
+.hand.is-gone {
+  opacity: 0;
+}
+
+.hand__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 20, 24, 0.5);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+
+.hand.is-open .hand__scrim {
+  opacity: 1;
+}
+
+.hand__frame {
+  position: fixed;
+  left: var(--hl);
+  top: var(--ht);
+  width: var(--hw);
+  height: var(--hh);
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--ink-900);
+  transition:
+    left 0.68s var(--ease-out),
+    top 0.68s var(--ease-out),
+    width 0.68s var(--ease-out),
+    height 0.68s var(--ease-out),
+    border-radius 0.68s var(--ease-out);
+}
+
+.hand.is-open .hand__frame {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.hand__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform 0.72s var(--ease-out);
+}
+
+.hand.is-open .hand__frame img {
+  transform: scale(1.09);
+}
+
+.hand__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(20, 20, 24, 0.14) 0%, rgba(20, 20, 24, 0.6) 100%);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+
+.hand.is-open .hand__veil {
+  opacity: 1;
+}
+
+.hand__caption {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: grid;
+  justify-items: center;
+  gap: 0.7rem;
+  padding: 0 var(--gutter) clamp(2.5rem, 9vh, 6rem);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(14px);
+  /* Leaving: get out of the way fast, with no delay. */
+  transition: opacity 0.26s var(--ease), transform 0.34s var(--ease);
+}
+
+.hand.is-open .hand__caption {
+  opacity: 1;
+  transform: none;
+  /* Arriving: settle in after the frame has mostly opened. */
+  transition: opacity 0.45s var(--ease) 0.14s, transform 0.6s var(--ease-out) 0.14s;
+}
+
+.hand__eyebrow {
+  font-size: 0.56rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-indent: 0.32em;
+  text-transform: uppercase;
+  color: rgba(251, 247, 240, 0.6);
+}
+
+.hand__name {
+  font-family: var(--display);
+  font-size: clamp(1.9rem, 5vw, 3.6rem);
+  font-weight: 300;
+  line-height: 1.04;
+  letter-spacing: 0.01em;
+  color: var(--sand-50);
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hand,
+  .hand__frame,
+  .hand__frame img,
+  .hand__veil,
+  .hand__scrim,
+  .hand__caption {
+    transition: none;
+  }
 }
 
 /* ------------------------------------------------------------ responsive --- */
@@ -358,10 +765,24 @@ import AppIcon from './AppIcon.vue'
     font-size: 1.5rem;
   }
 
+  .dev__actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin-top: 1.2rem;
+  }
+
   .dev__cta {
     width: 100%;
     justify-content: space-between;
-    padding: 0.95rem 0;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .dev__ask {
+    width: 100%;
+    text-align: left;
+    padding: 0.9rem 0;
     border-bottom: 1px solid var(--line);
   }
 }

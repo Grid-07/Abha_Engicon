@@ -63,6 +63,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /* Native anchor jumps must clear the fixed header. */
+  scroll-padding-top: calc(var(--nav-h) + 18px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -429,6 +431,22 @@ h3 {
 .page-enter-from,
 .page-leave-to {
   opacity: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Cross-site hand-off. While a project banner is taking over the screen the
+   page behind it dims and drifts back, so the move reads as a camera push
+   rather than a page swap. Driven by LiveProjects.vue.
+   -------------------------------------------------------------------------- */
+#main,
+.ft {
+  transition: transform 0.62s var(--ease-out), opacity 0.5s var(--ease);
+}
+
+body.is-handing #main,
+body.is-handing .ft {
+  transform: scale(0.985);
+  opacity: 0.42;
 }
 
 @media (max-width: 760px) {

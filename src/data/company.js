@@ -2,17 +2,9 @@
 // Company details, contact numbers, vision/mission and the project list are
 // transcribed from the printed BIMAL MANGAL GARDEN and SHRI GANESH ARPAN
 // brochures. Nothing here is invented.
-
-export const brand = {
-  name: 'Abha Engicon',
-  wordmark: ['ABHA', 'ENGICON'],
-  legal: 'Abha Engicon Pvt. Ltd.',
-  tagline: 'Two addresses open. Ten already lived in.',
-  intro:
-    'A Biharsharif developer. Two addresses open, ten already handed over — and a specification sheet we are happy to publish.',
-  credai: 'CREDAI Bihar Member · BR/PTN/168',
-  established: 15,
-}
+//
+// Adding a project later means adding one entry to `live` (with its deployed
+// `href`) — the counters, the headline and the enquiry dropdown all follow.
 
 export const contact = {
   phones: [
@@ -65,8 +57,8 @@ export const about = {
 }
 
 // ---------------------------------------------------------------------------
-// The two developments that have their own microsites. `href` points at the
-// deployed site, so the parent portfolio is the single entry point for both.
+// The developments that have their own microsites. `href` points at the
+// deployed site, so the parent page is the single entry point for all of them.
 // ---------------------------------------------------------------------------
 export const live = [
   {
@@ -76,6 +68,7 @@ export const live = [
     location: 'Biharsharif, Nalanda',
     image: 'images/projects/bimal-mangal-gardens.jpg',
     line: 'Two blocks of homes over a retail plinth, set around a landscaped courtyard and deck pool.',
+    homes: 16,
     facts: [
       ['2', 'Blocks'],
       ['16', 'Residences'],
@@ -90,6 +83,7 @@ export const live = [
     location: 'Biharsharif, Nalanda',
     image: 'images/projects/shri-ganesh-hero.jpg',
     line: 'Two low-rise towers of two, three and four bedroom homes on the Ekangarsarai Main Road.',
+    homes: 22,
     facts: [
       ['2', 'Towers'],
       ['22', 'Homes'],
@@ -100,27 +94,39 @@ export const live = [
 ]
 
 // ---------------------------------------------------------------------------
-// Delivered addresses, in the order the brochure prints them.
+// Everything below is derived. Add a project above and the copy, the counters
+// and the headline all keep up.
 // ---------------------------------------------------------------------------
-export const delivered = [
-  { name: 'Arpan Vilash', note: 'Blocks A & B', image: 'images/projects/arpan-vilash-a.jpg' },
-  { name: 'Arpan Enclave', note: 'Phase 1 & 2', image: 'images/projects/arpan-enclave.jpg' },
-  { name: 'Majestic', note: 'Apartments', image: 'images/projects/majestic.jpg' },
-  { name: 'Rajrappa Arpan', note: 'Apartments', image: 'images/projects/rajrappa-arpan.jpg' },
-  { name: 'Amar Villa', note: 'Apartments', image: 'images/projects/amar-villa.jpg' },
-  { name: 'Nishesh Arpan', note: 'Apartments', image: 'images/projects/nishesh-arpan.jpg' },
-  { name: 'Bhardwaj Arpan', note: 'Apartments', image: 'images/projects/bhardwaj-arpan.jpg' },
-  { name: 'Ambika Enclave', note: 'Apartments', image: 'images/projects/ambika-enclave.jpg' },
-  { name: 'Gomti Laxmi Enclave', note: 'Apartments', image: 'images/projects/gomti-laxmi-enclave.jpg' },
-  { name: 'Shailmanoram Enclave', note: 'Apartments', image: 'images/projects/shailmanoram-enclave.jpg' },
-]
+const WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten']
+
+export const word = (n) => WORDS[n] || String(n)
+
+export const counts = {
+  live: live.length,
+  homes: live.reduce((n, p) => n + (p.homes || 0), 0),
+}
+
+const addresses = (n) => `${word(n)} ${n === 1 ? 'address' : 'addresses'}`
+
+export const brand = {
+  name: 'Abha Engicon',
+  wordmark: ['ABHA', 'ENGICON'],
+  legal: 'Abha Engicon Pvt. Ltd.',
+  tagline: `${addresses(counts.live)} open in Biharsharif.`,
+  // No count here on purpose — the tagline directly above already carries it,
+  // and repeating "two addresses open" twice reads as a stutter.
+  intro:
+    'A Biharsharif developer. Low-rise homes, a specification sheet we publish, and a sales desk that answers after handover.',
+  credai: 'CREDAI Bihar Member · BR/PTN/168',
+  established: 15,
+}
 
 export const stats = [
-  { value: 12, suffix: '', label: 'Addresses delivered or selling' },
-  { value: 38, suffix: '', label: 'Homes in the two live projects' },
+  { value: counts.live, suffix: '', label: 'Addresses open today' },
+  { value: counts.homes, suffix: '', label: 'Homes in those addresses' },
   { value: 15, suffix: '', label: 'Years of the group' },
   { value: 2, suffix: '', label: 'Offices across Bihar & Jharkhand' },
 ]
 
 export const disclaimer =
-  'All details on this site are for easy information and concept purposes only, and do not form part of any agreement. This is a tentative document and the promoter reserves the right to make variations and modifications.'
+  'All details on this site are for easy information and concept purposes only, do not form part of any agreement. This is a tentative document and the promoter reserves the right to make variations and modifications.'

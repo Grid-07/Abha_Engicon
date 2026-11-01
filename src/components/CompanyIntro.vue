@@ -17,10 +17,10 @@ import AppIcon from './AppIcon.vue'
 
         <div class="co__meta" v-reveal="160">
           <span class="co__badge">{{ brand.credai }}</span>
-          <router-link to="/about" class="link-arrow">
-            Read more about us
-            <AppIcon name="arrow-up-right" :size="13" />
-          </router-link>
+          <a href="#contact" class="link-arrow">
+            Talk to us
+            <AppIcon name="arrow-right" :size="13" />
+          </a>
         </div>
       </div>
 

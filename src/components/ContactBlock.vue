@@ -1,7 +1,8 @@
 <script setup>
-import { reactive, ref, computed, onMounted } from 'vue'
+import { reactive, ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { contact, live } from '../data/company'
+import { enquiry } from '../data/enquiry'
 import AppIcon from './AppIcon.vue'
 
 const route = useRoute()
@@ -13,10 +14,20 @@ const sent = ref(false)
 const options = computed(() => ['A general enquiry', ...live.map((p) => p.name)])
 
 onMounted(() => {
+  // A deep link can still name the project: /?project=shri-ganesh-arpan#contact
   const q = String(route.query.project || '')
   const match = live.find((p) => p.slug === q || p.name.toLowerCase() === q.toLowerCase())
   if (match) form.interest = match.name
+  if (enquiry.interest) form.interest = enquiry.interest
 })
+
+// The project cards on this page hand their name over here.
+watch(
+  () => enquiry.interest,
+  (v) => {
+    if (v) form.interest = v
+  }
+)
 
 function validate() {
   errors.name = form.name.trim().length < 2 ? 'Please enter your name.' : ''
@@ -46,12 +57,13 @@ function reset() {
   form.phone = ''
   form.message = ''
   form.interest = ''
+  enquiry.interest = ''
   sent.value = false
 }
 </script>
 
 <template>
-  <section id="enquire" class="enq section">
+  <section id="contact" class="enq section">
     <div class="shell enq__grid">
       <!-- ------------------------------------------------------- details --- -->
       <div class="enq__side">
@@ -59,7 +71,7 @@ function reset() {
         <h2 class="enq__title" v-reveal="60">Come and see the site.</h2>
         <p class="enq__lede" v-reveal="100">
           The sales desk is open every day at the Shri Ganesh Arpan site office on the Ekangarsarai
-          Main Road. Call ahead and we will walk you through both projects.
+          Main Road. Call ahead and we will walk you through every open address.
         </p>
 
         <div class="offices" v-reveal="140">

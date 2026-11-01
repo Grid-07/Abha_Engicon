@@ -41,10 +41,28 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
-    <script type="module" crossorigin src="/Abha_Engicon/assets/index-44_O68J8.js"></script>
-    <link rel="stylesheet" crossorigin href="/Abha_Engicon/assets/index-DKsHoTe7.css">
+    <script type="module" crossorigin src="/Abha_Engicon/assets/index-amf5kL1I.js"></script>
+    <link rel="stylesheet" crossorigin href="/Abha_Engicon/assets/index-BsE5XSUT.css">
   </head>
   <body>
     <div id="app"></div>
+
+    <script>
+      // Coming back from a project site: the reverse zoom has to start the
+      // moment the page paints, but Chromium animates the restored scroll
+      // position over ~650ms no matter what scroll-behavior says. So take the
+      // restoration off the browser entirely and put it back ourselves —
+      // instantly — before the reverse begins. LiveProjects.vue does the
+      // scrollTo and hands history.scrollRestoration back when it's done.
+      try {
+        if (sessionStorage.getItem('abha:handoff')) {
+          if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+          document.documentElement.style.scrollBehavior = 'auto'
+        }
+      } catch (e) {
+        /* private mode */
+      }
+    </script>
+
   </body>
 </html>

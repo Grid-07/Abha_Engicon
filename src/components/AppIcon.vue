@@ -60,5 +60,17 @@ defineProps({
     <template v-else-if="name === 'check'">
       <path d="m4.5 12.5 5 5 10-11" />
     </template>
+    <template v-else-if="name === 'play'">
+      <path d="M8 5.2v13.6L19 12z" />
+    </template>
+    <template v-else-if="name === 'pause'">
+      <path d="M9.5 5v14M14.5 5v14" />
+    </template>
+    <template v-else-if="name === 'expand'">
+      <path d="M4 9V4h5M20 15v5h-5M20 9V4h-5M4 15v5h5" />
+    </template>
+    <template v-else-if="name === 'shrink'">
+      <path d="M9 4v5H4M15 20v-5h5M15 4v5h5M9 20v-5H4" />
+    </template>
   </svg>
 </template>

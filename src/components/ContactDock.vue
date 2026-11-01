@@ -18,9 +18,9 @@ import AppIcon from './AppIcon.vue'
       <AppIcon name="whatsapp" :size="16" />
       <span>WhatsApp</span>
     </a>
-    <router-link to="/contact" class="dock__btn dock__btn--solid">
+    <a href="#contact" class="dock__btn dock__btn--solid">
       <span>Book a visit</span>
-    </router-link>
+    </a>
   </div>
 </template>
 
