@@ -1,0 +1,14 @@
+{
+  "name": "Abha Engicon",
+  "short_name": "Abha Engicon",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "theme_color": "#e7cca4",
+  "background_color": "#f3ebdd",
+  "icons": [
+    { "src": "./favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./favicon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "./maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
