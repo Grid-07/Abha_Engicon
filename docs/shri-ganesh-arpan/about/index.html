@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#e7cca4" />
+
+    <link rel="icon" href="/Abha_Engicon/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/Abha_Engicon/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/Abha_Engicon/favicon-192.png" />
+    <link rel="apple-touch-icon" href="/Abha_Engicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/Abha_Engicon/site.webmanifest" />
+
+    <title>Abha Engicon — Homes in Biharsharif, Nalanda</title>
+    <meta
+      name="description"
+      content="Abha Engicon Pvt. Ltd. builds low-rise homes in Biharsharif, Nalanda. Two addresses now selling — Bimal Mangal Gardens and Shri Ganesh Arpan."
+    />
+    <meta name="author" content="Abha Engicon Pvt. Ltd." />
+    <link rel="canonical" href="https://grid-07.github.io/Abha_Engicon/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Abha Engicon" />
+    <meta property="og:title" content="Abha Engicon — Homes in Biharsharif, Nalanda" />
+    <meta
+      property="og:description"
+      content="Two addresses now selling in Biharsharif. Low-rise homes, built by Abha Engicon."
+    />
+    <meta property="og:url" content="https://grid-07.github.io/Abha_Engicon/" />
+    <meta property="og:image" content="https://grid-07.github.io/Abha_Engicon/images/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Abha Engicon — Homes in Biharsharif, Nalanda" />
+    <meta
+      name="twitter:description"
+      content="Two addresses now selling in Biharsharif."
+    />
+    <meta name="twitter:image" content="https://grid-07.github.io/Abha_Engicon/images/og-image.jpg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- One request covers all three experiences: the group page, Bimal Mangal
+         Gardens (Cormorant + Jost, upright and italic) and Shri Ganesh Arpan,
+         which sets its display type in Cinzel. Splitting this per route would
+         save a few unused faces but cost a second round trip on the way in. -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="/Abha_Engicon/assets/index-C8-zo0YC.js"></script>
+    <link rel="stylesheet" crossorigin href="/Abha_Engicon/assets/index-COdeAhCA.css">
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      // Coming back from a project site: the reverse zoom has to start the
+      // moment the page paints, but Chromium animates the restored scroll
+      // position over ~650ms no matter what scroll-behavior says. So take the
+      // restoration off the browser entirely and put it back ourselves —
+      // instantly — before the reverse begins. LiveProjects.vue does the
+      // scrollTo and hands history.scrollRestoration back when it's done.
+      try {
+        if (sessionStorage.getItem('abha:handoff')) {
+          if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+          document.documentElement.style.scrollBehavior = 'auto'
+        }
+      } catch (e) {
+        /* private mode */
+      }
+    </script>
+
+  </body>
+</html>
