@@ -1,10 +1,11 @@
 // The parent site owns its own hero film.
 //
-// This used to pull the hero derivatives out of ../Arpan_Vilas, which meant
-// deleting the film from the Bimla microsite silently blanked the parent hero
-// as well. The parent now keeps the film itself: this script only fingerprints
-// whatever is sitting in public/media + public/images, renames each file to
-// match its content hash, and writes src/data/flagship.json.
+// It once read the hero derivatives out of the Bimla project folder, which
+// meant deleting the film there silently blanked the parent hero as well, and
+// made this repo depend on a checkout it no longer shares a directory with.
+// The film now lives here: this script only fingerprints whatever is sitting
+// in public/media + public/images, renames each file to match its content
+// hash, and writes src/data/flagship.json.
 //
 // Because the URLs are content-addressed, dropping a new hero-loop.mp4 (with no
 // hash in the name) is enough to publish a replacement — the next build gives it

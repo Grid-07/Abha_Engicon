@@ -38,8 +38,8 @@
 
       <p class="footer__word">Bimla Mangal Gardens</p>
 
-      <!-- Shared with the parent site and with Shri Ganesh Arpan: the group
-           directory, identical in all three footers. -->
+      <!-- The group directory, now an internal one: all three entries are
+           routes inside this site, so nothing here leaves the parent. -->
       <div class="footer__group">
         <div class="footer__group-id">
           <img
@@ -54,15 +54,15 @@
         </div>
 
         <nav class="footer__group-links" aria-label="Abha Engicon group">
-          <a
+          <router-link
             v-for="s in group.sites"
             :key="s.id"
-            :href="s.href"
+            :to="s.route"
             :class="{ 'is-here': s.id === 'bimal' }"
             :aria-current="s.id === 'bimal' ? 'page' : undefined"
           >
             {{ s.label }}
-          </a>
+          </router-link>
         </nav>
       </div>
 

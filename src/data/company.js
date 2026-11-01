@@ -58,8 +58,9 @@ export const about = {
 
 // ---------------------------------------------------------------------------
 // The developments that live inside this site. `route` is the in-app path the
-// banner hands off to; `site` is the standalone deployment, which still exists
-// and still works but is no longer the way in from here.
+// banner hands off to. There is deliberately no reference to the standalone
+// deployments of these two projects — they still exist and still work, but the
+// parent does not link to them and nothing in the build reads from them.
 // ---------------------------------------------------------------------------
 export const live = [
   {
@@ -76,7 +77,6 @@ export const live = [
       ['10', 'Retail shops'],
     ],
     route: '/bimla-mangal-gardens',
-    site: 'https://grid-07.github.io/Arpan_Vilas/',
   },
   {
     slug: 'shri-ganesh-arpan',
@@ -92,7 +92,6 @@ export const live = [
       ['6', 'Layouts'],
     ],
     route: '/shri-ganesh-arpan',
-    site: 'https://grid-07.github.io/Shri_Ganesh_Arpan/',
   },
 ]
 
