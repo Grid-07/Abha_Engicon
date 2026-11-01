@@ -1,1 +1,0 @@
-import{N as e,C as o,F as t}from"./Footer-7DE4y8Yn.js";import{L as r}from"./Location-Btf6L0it.js";import{c as s,b as a,a as c,o as n}from"./index-CeIsYxe_.js";import"./project-BPG_ygiJ.js";const i={class:"page page--inner"},g={__name:"ContactPage",setup(m){return(p,_)=>(n(),s("div",i,[a(e),c("main",null,[a(o),a(r)]),a(t)]))}};export{g as default};

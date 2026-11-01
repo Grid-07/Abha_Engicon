@@ -136,7 +136,11 @@ function startReverse(pending) {
       handOpen.value = false
       setReceding(false)
     })
-    finishReverse(reduced() ? 0 : 700)
+    // 760, not 700: the shrink is a 0.68s transition that only starts a frame
+    // after the class flips, and the last couple of pixels of an ease-out take
+    // another 30ms or so. Fading any earlier leaves the cover a few pixels off
+    // the card while it disappears.
+    finishReverse(reduced() ? 0 : 760)
   })
 }
 
