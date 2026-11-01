@@ -1,5 +1,5 @@
 <template>
-  <section class="hero" :class="{ 'is-loaded': loaded }">
+  <section class="hero" :class="{ 'is-loaded': loaded, 'is-instant': arrived }">
     <div class="hero__media" :style="{ transform: `translate3d(0, ${parallax}px, 0)` }">
       <img
         :src="asset('images/brochure/hero-facade.jpg')"
@@ -69,12 +69,22 @@ const loaded = ref(false)
 const parallax = ref(0)
 const display = reactive(heroStats.map(() => 0))
 
+// Arriving through the parent's banner push: the cover over this page is
+// already showing the same photograph, so the slow 1.6s entrance fade would
+// read as a flash of black between the two. Skip it for that one arrival.
+const arrived =
+  typeof document !== 'undefined' && document.body.classList.contains('is-handing')
+
 let ticking = false
 const onScroll = () => {
   if (ticking) return
   ticking = true
   requestAnimationFrame(() => {
     const y = window.scrollY
+    // Porting artifact: this was left as min(y, -800), which is -800 at every
+    // scroll position — the hero photograph sat 800px above the viewport and
+    // the first thing a visitor saw was an empty ink panel. Matches the
+    // standalone site again.
     parallax.value = Math.min(y * 0.28, 200)
     ticking = false
   })
@@ -145,6 +155,11 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   opacity: 1;
   transform: scale(1);
   animation: kenburns 34s ease-in-out infinite alternate;
+}
+
+/* No entrance of its own — the banner push is already holding this frame. */
+.hero.is-instant .hero__img {
+  transition: none;
 }
 
 @keyframes kenburns {

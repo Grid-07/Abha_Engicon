@@ -18,6 +18,7 @@ import { useRoute } from 'vue-router'
 import Navigation from './components/Navigation.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import ContactDock from './components/ContactDock.vue'
+import HandOff from './components/HandOff.vue'
 
 const route = useRoute()
 
@@ -49,4 +50,9 @@ watch(
     <SiteFooter />
     <ContactDock />
   </template>
+
+  <!-- Outside the branch above on purpose: this is the banner push, and it has
+       to keep covering the screen while the group page is torn down and the
+       project page takes its place. See components/HandOff.vue. -->
+  <HandOff />
 </template>

@@ -1,9 +1,19 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { asset } from '../utils/asset'
 import { live, counts, word } from '../data/company'
 import { askAbout } from '../data/enquiry'
+import {
+  hand,
+  handOpen,
+  handGone,
+  handLanded,
+  phase,
+  setReceding,
+  remember,
+  takePending,
+} from '../data/handoff'
 import AppIcon from './AppIcon.vue'
 
 /**
@@ -12,7 +22,9 @@ import AppIcon from './AppIcon.vue'
  * Forward: clicking a banner pushes it — the card's photograph grows out of
  * its slot to fill the screen while the photo itself zooms in, and the rest of
  * the page dims and drifts back behind it. The route change happens underneath,
- * in this same document, so nothing ever goes blank.
+ * in this same document, so nothing ever goes blank. The cover itself is
+ * rendered by HandOff.vue at the root, because this component is unmounted by
+ * that route change and the cover has to survive it.
  *
  * Back: returning to this page remounts the component, which finds the project
  * remembered in sessionStorage and plays the same move in reverse — the cover
@@ -20,13 +32,8 @@ import AppIcon from './AppIcon.vue'
  * "back to Abha" link and for the browser's Back button alike, because both
  * end up here with the record still in place.
  */
-const KEY = 'abha:handoff'
 
 const router = useRouter()
-
-const hand = ref(null)
-const handOpen = ref(false)
-const handGone = ref(false)
 
 let timers = []
 const later = (fn, ms) => timers.push(setTimeout(fn, ms))
@@ -55,11 +62,6 @@ function cardMedia(slug) {
   return card ? card.querySelector('.dev__media') : null
 }
 
-// The page recedes behind the cover; see style.css.
-function setReceding(on) {
-  document.body.classList.toggle('is-handing', on)
-}
-
 /* ---------------------------------------------------------------- forward --- */
 function handoffTo(ev, p) {
   // Never hijack a new-tab / new-window intent.
@@ -70,18 +72,16 @@ function handoffTo(ev, p) {
   clearTimers()
   const media = cardMedia(p.slug)
 
-  hand.value = { name: p.name, img: asset(p.image), rect: media ? rectOf(media) : viewportRect() }
-  handOpen.value = false
+  phase.value = 'forward'
+  handLanded.value = false
   handGone.value = false
+  handOpen.value = false
+  hand.value = { name: p.name, img: asset(p.image), rect: media ? rectOf(media) : viewportRect() }
   setReceding(true)
 
   // Remember the destination — and where on this page the visitor was — so
   // Back can play the same move in reverse.
-  try {
-    sessionStorage.setItem(KEY, JSON.stringify({ slug: p.slug, y: Math.round(window.scrollY) }))
-  } catch {
-    /* private mode — the forward transition still works */
-  }
+  remember(p.slug)
 
   requestAnimationFrame(() => requestAnimationFrame(() => (handOpen.value = true)))
 
@@ -90,18 +90,6 @@ function handoffTo(ev, p) {
   // cover simply stays up a little longer, which reads as the push continuing
   // rather than as a stall.
   later(() => router.push(p.route), reduced() ? 0 : 720)
-
-  // Safety net: if the navigation never happens (offline, blocked, a browser
-  // that refuses the jump), never leave the cover stuck over the page.
-  later(() => {
-    handGone.value = true
-    setReceding(false)
-    later(() => {
-      hand.value = null
-      handOpen.value = false
-      handGone.value = false
-    }, 300)
-  }, 6000)
 }
 
 /* ---------------------------------------------------------------- reverse --- */
@@ -113,15 +101,19 @@ function startReverse(pending) {
   reversing = true
   clearTimers()
 
-  // Put the page back where the visitor left it ourselves, instantly, before
-  // anything else — see the inline script in index.html.
-  if (typeof pending.y === 'number') window.scrollTo(0, pending.y)
+  // The restore has to be instant. `html { scroll-behavior: smooth }` would
+  // otherwise glide the page back over ~700ms while the cover is already
+  // shrinking, and the shrink would land a hundred-odd pixels above the card.
+  document.documentElement.style.scrollBehavior = 'auto'
+  if (typeof pending.y === 'number') window.scrollTo({ top: pending.y, behavior: 'instant' })
 
   // Cover the page in its expanded state straight away, so the visitor never
   // sees a flash of the parent before the move begins…
+  phase.value = 'reverse'
+  handLanded.value = false
+  handGone.value = false
   hand.value = { name: p.name, img: asset(p.image), rect: viewportRect() }
   handOpen.value = true
-  handGone.value = false
   setReceding(true)
 
   // …then let layout settle and shrink it back onto the card it came from.
@@ -155,6 +147,8 @@ function finishReverse(delay) {
       hand.value = null
       handOpen.value = false
       handGone.value = false
+      handLanded.value = false
+      phase.value = null
       reversing = false
       // Hand scrolling back to the stylesheet and the browser.
       document.documentElement.style.scrollBehavior = ''
@@ -181,24 +175,6 @@ function waitForScrollSettle(cb) {
   requestAnimationFrame(tick)
 }
 
-function takePending() {
-  let raw = ''
-  try {
-    raw = sessionStorage.getItem(KEY) || ''
-    if (raw) sessionStorage.removeItem(KEY)
-  } catch {
-    /* ignore */
-  }
-  if (!raw) return null
-  try {
-    const parsed = JSON.parse(raw)
-    if (parsed && parsed.slug) return parsed
-  } catch {
-    /* older plain-string value */
-  }
-  return { slug: raw, y: null }
-}
-
 function onPageShow(e) {
   // Restored from the back/forward cache: the old cover is still mounted, so
   // tear the state down before replaying the move.
@@ -208,6 +184,7 @@ function onPageShow(e) {
   hand.value = null
   handOpen.value = false
   handGone.value = false
+  handLanded.value = false
   setReceding(false)
   const pending = takePending()
   if (pending) requestAnimationFrame(() => startReverse(pending))
@@ -230,8 +207,9 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('pageshow', onPageShow)
+  // Not setReceding(false): a forward hand-off is mid-flight right now and
+  // HandOff.vue owns the cover until the project page has taken over.
   clearTimers()
-  setReceding(false)
 })
 </script>
 
@@ -304,34 +282,6 @@ onUnmounted(() => {
         </article>
       </div>
     </div>
-
-    <!-- Teleported out of <main> so the page behind it can be scaled and
-         dimmed without dragging this fixed overlay along. -->
-    <Teleport to="body">
-      <div
-        v-if="hand"
-        class="hand"
-        :class="{ 'is-open': handOpen, 'is-gone': handGone }"
-        aria-hidden="true"
-        :style="{
-          '--hl': hand.rect.left + 'px',
-          '--ht': hand.rect.top + 'px',
-          '--hw': hand.rect.width + 'px',
-          '--hh': hand.rect.height + 'px',
-        }"
-      >
-        <div class="hand__scrim"></div>
-
-        <div class="hand__frame">
-          <img :src="hand.img" alt="" />
-          <div class="hand__veil"></div>
-          <div class="hand__caption">
-            <span class="hand__eyebrow">Abha Engicon</span>
-            <span class="hand__name">{{ hand.name }}</span>
-          </div>
-        </div>
-      </div>
-    </Teleport>
   </section>
 </template>
 
@@ -590,134 +540,6 @@ onUnmounted(() => {
 .dev__ask:hover {
   color: var(--ink-900);
   border-color: var(--line);
-}
-
-/* ------------------------------------------------------------ hand-off --- */
-/* The banner, lifted out of the grid and pushed at the viewer: the frame grows
-   to the viewport while the photograph zooms in, and the page dims behind it.
-   The same transition runs backwards when the visitor comes back. */
-.hand {
-  position: fixed;
-  inset: 0;
-  z-index: 3000;
-  pointer-events: auto;
-  transition: opacity 0.26s var(--ease);
-}
-
-.hand.is-gone {
-  opacity: 0;
-}
-
-.hand__scrim {
-  position: absolute;
-  inset: 0;
-  background: rgba(20, 20, 24, 0.5);
-  opacity: 0;
-  transition: opacity 0.5s var(--ease);
-}
-
-.hand.is-open .hand__scrim {
-  opacity: 1;
-}
-
-.hand__frame {
-  position: fixed;
-  left: var(--hl);
-  top: var(--ht);
-  width: var(--hw);
-  height: var(--hh);
-  overflow: hidden;
-  border-radius: var(--radius-lg);
-  background: var(--ink-900);
-  transition:
-    left 0.68s var(--ease-out),
-    top 0.68s var(--ease-out),
-    width 0.68s var(--ease-out),
-    height 0.68s var(--ease-out),
-    border-radius 0.68s var(--ease-out);
-}
-
-.hand.is-open .hand__frame {
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 0;
-}
-
-.hand__frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1);
-  transition: transform 0.72s var(--ease-out);
-}
-
-.hand.is-open .hand__frame img {
-  transform: scale(1.09);
-}
-
-.hand__veil {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(20, 20, 24, 0.14) 0%, rgba(20, 20, 24, 0.6) 100%);
-  opacity: 0;
-  transition: opacity 0.5s var(--ease);
-}
-
-.hand.is-open .hand__veil {
-  opacity: 1;
-}
-
-.hand__caption {
-  position: absolute;
-  inset: auto 0 0 0;
-  display: grid;
-  justify-items: center;
-  gap: 0.7rem;
-  padding: 0 var(--gutter) clamp(2.5rem, 9vh, 6rem);
-  text-align: center;
-  opacity: 0;
-  transform: translateY(14px);
-  /* Leaving: get out of the way fast, with no delay. */
-  transition: opacity 0.26s var(--ease), transform 0.34s var(--ease);
-}
-
-.hand.is-open .hand__caption {
-  opacity: 1;
-  transform: none;
-  /* Arriving: settle in after the frame has mostly opened. */
-  transition: opacity 0.45s var(--ease) 0.14s, transform 0.6s var(--ease-out) 0.14s;
-}
-
-.hand__eyebrow {
-  font-size: 0.56rem;
-  font-weight: 500;
-  letter-spacing: 0.32em;
-  text-indent: 0.32em;
-  text-transform: uppercase;
-  color: rgba(251, 247, 240, 0.6);
-}
-
-.hand__name {
-  font-family: var(--display);
-  font-size: clamp(1.9rem, 5vw, 3.6rem);
-  font-weight: 300;
-  line-height: 1.04;
-  letter-spacing: 0.01em;
-  color: var(--sand-50);
-  text-wrap: balance;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hand,
-  .hand__frame,
-  .hand__frame img,
-  .hand__veil,
-  .hand__scrim,
-  .hand__caption {
-    transition: none;
-  }
 }
 
 /* ------------------------------------------------------------ responsive --- */

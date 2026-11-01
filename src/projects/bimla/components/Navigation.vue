@@ -3,19 +3,35 @@
     <div class="nav__progress" :style="{ transform: `scaleX(${progress})` }"></div>
 
     <div class="nav__inner">
-      <router-link to="/bimla-mangal-gardens" class="brand" @click="close" aria-label="Bimal Mangal Gardens — home">
-        <img
-          :src="asset('images/brand/emblem-sand.png')"
-          alt=""
-          class="brand__mark"
-          width="419"
-          height="460"
-        />
-        <span class="brand__text">
+      <!-- The lockup is two links, not one: the emblem is the group's mark, so
+           it leaves the project and lands on the Abha Engicon home page; the
+           project name beside it stays the way to this project's own top. -->
+      <div class="brand">
+        <router-link
+          to="/"
+          class="brand__mark-link"
+          aria-label="Abha Engicon — home"
+          title="Abha Engicon — home"
+          @click="close"
+        >
+          <img
+            :src="asset('images/brand/emblem-sand.png')"
+            alt=""
+            class="brand__mark"
+            width="419"
+            height="460"
+          />
+        </router-link>
+        <router-link
+          to="/bimla-mangal-gardens"
+          class="brand__text"
+          aria-label="Bimal Mangal Gardens — home"
+          @click="close"
+        >
           <span class="brand__name">ABHA</span>
           <span class="brand__sub">Bimal Mangal Gardens</span>
-        </span>
-      </router-link>
+        </router-link>
+      </div>
 
       <nav class="nav__links" aria-label="Primary">
         <a
@@ -148,7 +164,9 @@ const scrollTo = (id) => {
 
 const go = async (id) => {
   close()
-  if (route.path !== '/') {
+  // Bimla is a single page, so this is usually the current route and the push
+  // is a no-op — scroll straight away instead of waiting a frame for nothing.
+  if (route.path !== '/bimla-mangal-gardens') {
     await router.push('/bimla-mangal-gardens')
     requestAnimationFrame(() => setTimeout(() => scrollTo(id), 120))
   } else {
@@ -241,10 +259,33 @@ watch(() => route.path, () => {
   flex-shrink: 0;
 }
 
+/* Emblem = group link. The padded, negative-margined box gives it a 44px-ish
+   hit area without moving the lockup a pixel. */
+.brand__mark-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px;
+  margin: -7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+
+.brand__mark-link:hover,
+.brand__mark-link:focus-visible {
+  background: rgba(210, 175, 94, 0.16);
+  box-shadow: 0 0 0 1px rgba(210, 175, 94, 0.4);
+}
+
 .brand__mark {
   width: auto;
   height: 30px;
   flex-shrink: 0;
+  transition: transform 0.35s var(--ease);
+}
+
+.brand__mark-link:hover .brand__mark {
+  transform: scale(1.07);
 }
 
 .brand__text {
@@ -252,6 +293,10 @@ watch(() => route.path, () => {
   flex-direction: column;
   gap: 0.22rem;
   line-height: 1;
+}
+
+.brand__text:hover .brand__sub {
+  color: var(--gold-300);
 }
 
 .brand__name {
@@ -272,6 +317,7 @@ watch(() => route.path, () => {
   text-transform: uppercase;
   white-space: nowrap;
   color: rgba(243, 236, 223, 0.72);
+  transition: color 0.3s var(--ease);
 }
 
 /* Links */

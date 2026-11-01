@@ -1,19 +1,35 @@
 <template>
   <header class="nav" :class="{ 'nav--solid': solid, 'nav--open': open }">
     <div class="nav__inner shell shell--wide">
-      <router-link to="/shri-ganesh-arpan" class="brand" @click="close" aria-label="Shri Ganesh Arpan — home">
-        <img
-          :src="asset('images/brand/emblem-sand.png')"
-          alt=""
-          class="brand__mark"
-          width="419"
-          height="460"
-        />
-        <span class="brand__text">
+      <!-- Two links, not one: the emblem is the group's mark and goes to the
+           Abha Engicon home page; the project name is the way to this
+           project's own top. -->
+      <div class="brand">
+        <router-link
+          to="/"
+          class="brand__mark-link"
+          aria-label="Abha Engicon — home"
+          title="Abha Engicon — home"
+          @click="close"
+        >
+          <img
+            :src="asset('images/brand/emblem-sand.png')"
+            alt=""
+            class="brand__mark"
+            width="419"
+            height="460"
+          />
+        </router-link>
+        <router-link
+          to="/shri-ganesh-arpan"
+          class="brand__text"
+          aria-label="Shri Ganesh Arpan — home"
+          @click="close"
+        >
           <span class="brand__name">ABHA</span>
           <span class="brand__sub">Shri Ganesh Arpan</span>
-        </span>
-      </router-link>
+        </router-link>
+      </div>
 
       <nav class="nav__links" aria-label="Primary">
         <router-link v-for="l in links" :key="l.id" :to="{ path: '/shri-ganesh-arpan', hash: '#' + l.id }">
@@ -103,10 +119,13 @@ const links = [
 ]
 
 const pages = [
-  { to: '/about', label: 'About Abha Engicon' },
-  { to: '/floor-plans', label: 'Floor Plans' },
-  { to: '/projects', label: 'Previous Projects' },
-  { to: '/contact', label: 'Contact' },
+  // Absolute paths, so they must carry the project prefix — a bare '/about'
+  // would hit the parent's legacy redirect and drop the visitor on the group
+  // home page.
+  { to: '/shri-ganesh-arpan/about', label: 'About Abha Engicon' },
+  { to: '/shri-ganesh-arpan/floor-plans', label: 'Floor Plans' },
+  { to: '/shri-ganesh-arpan/projects', label: 'Previous Projects' },
+  { to: '/shri-ganesh-arpan/contact', label: 'Contact' },
 ]
 
 const onKey = (e) => {
@@ -115,7 +134,10 @@ const onKey = (e) => {
 
 const onScroll = () => {
   const y = window.scrollY
-  solid.value = y > 40 || route.path !== '/'
+  // Porting artifact: this still compared against '/', which is never the SGA
+  // route inside the merged parent — so the bar was pinned solid everywhere,
+  // losing the transparent-at-top behaviour the standalone site had.
+  solid.value = y > 40 || route.path !== '/shri-ganesh-arpan'
   const h = document.documentElement.scrollHeight - window.innerHeight
   progress.value = h > 0 ? Math.min(1, y / h) : 0
 }
@@ -202,10 +224,33 @@ onUnmounted(() => {
   color: var(--gold-100);
 }
 
+/* Emblem = group link. Padded, negatively margined box gives it a comfortable
+   hit area without shifting the lockup. */
+.brand__mark-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px;
+  margin: -7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+
+.brand__mark-link:hover,
+.brand__mark-link:focus-visible {
+  background: rgba(193, 160, 116, 0.18);
+  box-shadow: 0 0 0 1px rgba(193, 160, 116, 0.42);
+}
+
 .brand__mark {
   width: auto;
   height: 30px;
   flex-shrink: 0;
+  transition: transform 0.35s var(--ease);
+}
+
+.brand__mark-link:hover .brand__mark {
+  transform: scale(1.07);
 }
 
 .brand__text {
@@ -213,6 +258,10 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 0.22rem;
   line-height: 1;
+}
+
+.brand__text:hover .brand__sub {
+  color: var(--gold-200);
 }
 
 .brand__name {
@@ -233,6 +282,7 @@ onUnmounted(() => {
   text-transform: uppercase;
   white-space: nowrap;
   color: rgba(241, 233, 219, 0.66);
+  transition: color 0.35s var(--ease);
 }
 
 /* --- Links -------------------------------------------------------------- */

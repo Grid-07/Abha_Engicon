@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '../pages/HomePage.vue'
+import { hasPending } from '../data/handoff'
 
 /**
  * One domain, three experiences.
@@ -137,10 +138,21 @@ const router = createRouter({
     // and restores the scroll position itself, so the router must keep its
     // hands off — a jump to the top here would shrink the cover onto a card
     // that is no longer where the visitor left it.
-    if (to.name === 'home' && from.meta.project) return false
+    if (to.name === 'home' && from.meta.project) {
+      // Unless there is nothing to replay — a deep link straight into a project
+      // leaves no record, and the group page would otherwise open at whatever
+      // scroll offset the project page happened to be at.
+      return hasPending() ? false : { top: 0, behavior: 'instant' }
+    }
+
     if (to.hash) return { el: to.hash, behavior: 'smooth' }
     if (saved) return saved
-    return { top: 0 }
+
+    // `instant`, not the default: `html { scroll-behavior: smooth }` would
+    // otherwise animate the jump, and on the way into a project that means the
+    // cover lifts on a page that is still scrolling itself up from the group
+    // page's offset. The hero has to already be there when the cover goes.
+    return { top: 0, behavior: 'instant' }
   },
 })
 
