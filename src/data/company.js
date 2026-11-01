@@ -57,8 +57,9 @@ export const about = {
 }
 
 // ---------------------------------------------------------------------------
-// The developments that have their own microsites. `href` points at the
-// deployed site, so the parent page is the single entry point for all of them.
+// The developments that live inside this site. `route` is the in-app path the
+// banner hands off to; `site` is the standalone deployment, which still exists
+// and still works but is no longer the way in from here.
 // ---------------------------------------------------------------------------
 export const live = [
   {
@@ -74,7 +75,8 @@ export const live = [
       ['16', 'Residences'],
       ['10', 'Retail shops'],
     ],
-    href: 'https://grid-07.github.io/Arpan_Vilas/',
+    route: '/bimla-mangal-gardens',
+    site: 'https://grid-07.github.io/Arpan_Vilas/',
   },
   {
     slug: 'shri-ganesh-arpan',
@@ -89,7 +91,8 @@ export const live = [
       ['22', 'Homes'],
       ['6', 'Layouts'],
     ],
-    href: 'https://grid-07.github.io/Shri_Ganesh_Arpan/',
+    route: '/shri-ganesh-arpan',
+    site: 'https://grid-07.github.io/Shri_Ganesh_Arpan/',
   },
 ]
 

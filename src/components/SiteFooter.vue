@@ -20,10 +20,13 @@ const year = new Date().getFullYear()
       <div class="ft__cols">
         <div class="ft__col">
           <p class="ft__h">Now selling</p>
-          <a v-for="p in live" :key="p.slug" :href="p.href" class="ft__link">
+          <!-- In-app routes now, not the standalone deployments: these are the
+               same two projects, served from this domain. The arrow changes
+               from the outbound "leaves the site" mark to a plain one. -->
+          <router-link v-for="p in live" :key="p.slug" :to="p.route" class="ft__link">
             {{ p.name }}
-            <AppIcon name="arrow-up-right" :size="11" />
-          </a>
+            <AppIcon name="arrow" :size="11" />
+          </router-link>
         </div>
 
         <div class="ft__col">

@@ -1,24 +1,28 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { asset } from '../utils/asset'
 import { live, counts, word } from '../data/company'
 import { askAbout } from '../data/enquiry'
 import AppIcon from './AppIcon.vue'
 
 /**
- * Cross-site hand-off, in both directions.
+ * Hand-off into a project, in both directions.
  *
  * Forward: clicking a banner pushes it — the card's photograph grows out of
  * its slot to fill the screen while the photo itself zooms in, and the rest of
- * the page dims and drifts back behind it. The navigation happens underneath.
+ * the page dims and drifts back behind it. The route change happens underneath,
+ * in this same document, so nothing ever goes blank.
  *
- * Back: the browser restores this page (often from the back/forward cache,
- * which is why a naive overlay used to come back frozen over the page), and
- * the same move plays in reverse — the cover shrinks back onto the card it
- * came from. The project is remembered in sessionStorage, so it survives both
- * a cache restore and a cold reload.
+ * Back: returning to this page remounts the component, which finds the project
+ * remembered in sessionStorage and plays the same move in reverse — the cover
+ * shrinks back onto the card it came from. That works for the project's own
+ * "back to Abha" link and for the browser's Back button alike, because both
+ * end up here with the record still in place.
  */
 const KEY = 'abha:handoff'
+
+const router = useRouter()
 
 const hand = ref(null)
 const handOpen = ref(false)
@@ -81,7 +85,11 @@ function handoffTo(ev, p) {
 
   requestAnimationFrame(() => requestAnimationFrame(() => (handOpen.value = true)))
 
-  later(() => window.location.assign(p.href), reduced() ? 0 : 720)
+  // The cover is opaque by now, so the swap underneath is invisible. A lazy
+  // route chunk can take a moment to arrive on a cold visit; if it does, the
+  // cover simply stays up a little longer, which reads as the push continuing
+  // rather than as a stall.
+  later(() => router.push(p.route), reduced() ? 0 : 720)
 
   // Safety net: if the navigation never happens (offline, blocked, a browser
   // that refuses the jump), never leave the cover stuck over the page.
@@ -237,7 +245,7 @@ onUnmounted(() => {
         </div>
         <p class="lede live__lede" v-reveal="80">
           Every one is in Biharsharif, low-rise and built to the same specification. Each has its
-          own site — floor plans, unit areas, walkthroughs and the sales desk.
+          own section of this site — floor plans, unit areas, walkthroughs and the sales desk.
         </p>
       </header>
 
@@ -252,13 +260,13 @@ onUnmounted(() => {
         >
           <a
             class="dev__media"
-            :href="p.href"
-            :aria-label="`Open the ${p.name} website`"
+            :href="p.route"
+            :aria-label="`Open ${p.name}`"
             @click="handoffTo($event, p)"
           >
             <img :src="asset(p.image)" :alt="`${p.name} — building elevation`" loading="lazy" decoding="async" />
             <span class="dev__open">
-              View site
+              Open project
               <AppIcon name="arrow-up-right" :size="13" />
             </span>
           </a>
@@ -284,8 +292,8 @@ onUnmounted(() => {
             </dl>
 
             <div class="dev__actions">
-              <a class="dev__cta" :href="p.href" @click="handoffTo($event, p)">
-                Visit the {{ p.name }} site
+              <a class="dev__cta" :href="p.route" @click="handoffTo($event, p)">
+                Explore {{ p.name }}
                 <AppIcon name="arrow-right" :size="14" />
               </a>
               <button class="dev__ask" type="button" @click="askAbout(p.name)">
