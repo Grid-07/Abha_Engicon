@@ -142,17 +142,13 @@ onUnmounted(() => {
         @click.prevent="toTop"
       >
         <img
-          class="mark__emblem"
-          :src="asset(invert ? 'images/brand/emblem-cream.png' : 'images/brand/emblem-ink.png')"
+          class="mark__logo"
+          :src="asset(invert ? 'images/brand/logo-cream.png' : 'images/brand/logo-ink.png')"
           alt=""
-          width="419"
-          height="460"
+          width="581"
+          height="233"
           aria-hidden="true"
         />
-        <span class="mark__text">
-          <span class="mark__top">ABHA</span>
-          <span class="mark__sub">ENGICON</span>
-        </span>
       </a>
 
       <nav class="nav__links" aria-label="Primary">
@@ -244,14 +240,6 @@ onUnmounted(() => {
   box-shadow: 0 1px 0 rgba(243, 235, 221, 0.12);
 }
 
-.nav--invert .mark__top {
-  color: var(--sand-50);
-}
-
-.nav--invert .mark__sub {
-  color: rgba(243, 235, 221, 0.55);
-}
-
 .nav--invert .nav__link {
   color: rgba(243, 235, 221, 0.62);
 }
@@ -295,41 +283,17 @@ onUnmounted(() => {
 .mark {
   display: flex;
   align-items: center;
-  gap: 0.62rem;
   flex-shrink: 0;
 }
 
-.mark__emblem {
+/* The company's own lockup: ABHA over ENGICON, 2.49:1. 34px is the height
+   at which the ENGICON line still resolves into letters rather than a
+   smear -- below that the sub-line is decoration. */
+.mark__logo {
   width: auto;
-  height: 30px;
+  height: 34px;
   flex-shrink: 0;
   transition: opacity 0.4s var(--ease);
-}
-
-.mark__text {
-  display: grid;
-  gap: 0.18rem;
-  line-height: 1;
-}
-
-.mark__top {
-  font-family: var(--display);
-  font-size: 1.42rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-indent: 0.16em;
-  color: var(--ink-900);
-  transition: color 0.4s var(--ease);
-}
-
-.mark__sub {
-  font-family: var(--ui);
-  font-size: 0.44rem;
-  font-weight: 500;
-  letter-spacing: 0.42em;
-  text-indent: 0.42em;
-  color: var(--ink-500);
-  transition: color 0.4s var(--ease);
 }
 
 /* ---------------------------------------------------------------- links --- */
@@ -518,6 +482,10 @@ onUnmounted(() => {
 }
 
 @media (max-width: 760px) {
+  .mark__logo {
+    height: 30px;
+  }
+
   .drawer__link {
     font-size: 1.7rem;
     padding-block: 0.72rem;

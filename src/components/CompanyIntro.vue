@@ -26,9 +26,11 @@ import AppIcon from './AppIcon.vue'
 
       <div class="co__side">
         <img
-          :src="asset('images/brand/emblem-ink.png')"
+          :src="asset('images/brand/logo-ink.png')"
           alt=""
-          class="co__emblem"
+          class="co__logo"
+          width="581"
+          height="233"
           aria-hidden="true"
           loading="lazy"
         />
@@ -103,9 +105,9 @@ import AppIcon from './AppIcon.vue'
   justify-items: start;
 }
 
-.co__emblem {
-  width: clamp(56px, 6vw, 78px);
-  height: auto;
+.co__logo {
+  width: auto;
+  height: clamp(44px, 4.6vw, 62px);
   opacity: 0.85;
 }
 

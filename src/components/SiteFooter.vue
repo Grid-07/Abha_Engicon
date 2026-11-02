@@ -1,5 +1,6 @@
 <script setup>
 import { brand, contact, live, disclaimer } from '../data/company'
+import { asset } from '../utils/asset'
 import AppIcon from './AppIcon.vue'
 
 const year = new Date().getFullYear()
@@ -10,8 +11,14 @@ const year = new Date().getFullYear()
     <div class="shell ft__top">
       <div class="ft__brand">
         <a href="#top" class="ft__mark" aria-label="Abha Engicon — top of page">
-          <span class="ft__abha">ABHA</span>
-          <span class="ft__sub">ENGICON</span>
+          <img
+            class="ft__logo"
+            :src="asset('images/brand/logo-cream.png')"
+            alt=""
+            width="581"
+            height="233"
+            aria-hidden="true"
+          />
         </a>
         <p class="ft__tag">{{ brand.tagline }}</p>
         <a :href="`mailto:${contact.email}`" class="ft__mail">{{ contact.email }}</a>
@@ -78,26 +85,15 @@ const year = new Date().getFullYear()
 
 /* --------------------------------------------------------------- brand --- */
 .ft__mark {
-  display: grid;
-  gap: 0.25rem;
-  line-height: 1;
+  display: block;
 }
 
-.ft__abha {
-  font-family: var(--display);
-  font-size: clamp(2.6rem, 5vw, 4rem);
-  font-weight: 300;
-  letter-spacing: 0.06em;
-  color: var(--sand-50);
-}
-
-.ft__sub {
-  font-size: 0.56rem;
-  font-weight: 500;
-  letter-spacing: 0.6em;
-  text-indent: 0.6em;
-  text-transform: uppercase;
-  color: rgba(243, 235, 221, 0.5);
+/* The company's own lockup, cream on the dark foot. It is 2.49:1, so the
+   width is the only dimension worth setting. */
+.ft__logo {
+  display: block;
+  width: clamp(230px, 26vw, 330px);
+  height: auto;
 }
 
 .ft__tag {

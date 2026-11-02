@@ -193,18 +193,14 @@ onUnmounted(() => {
     <div class="hero__veil" aria-hidden="true"></div>
 
     <div class="hero__inner shell">
-      <img
-        :src="asset('images/brand/emblem-ink.png')"
-        alt=""
-        class="hero__emblem"
-        width="419"
-        height="460"
-        aria-hidden="true"
-      />
-
       <h1 class="hero__mark">
-        <span class="hero__abha">ABHA</span>
-        <span class="hero__engicon">ENGICON</span>
+        <img
+          class="hero__logo"
+          :src="asset('images/brand/logo-ink.png')"
+          alt="Abha Engicon"
+          width="581"
+          height="233"
+        />
       </h1>
 
       <div class="hero__rule" aria-hidden="true"></div>
@@ -366,39 +362,20 @@ onUnmounted(() => {
   transition: opacity 0.5s var(--ease), transform 0.6s var(--ease);
 }
 
-.hero__emblem {
-  width: clamp(34px, 4.2vw, 52px);
-  height: auto;
-  margin-bottom: clamp(1.1rem, 3vh, 1.8rem);
-  opacity: 0.92;
-}
-
 .hero__mark {
-  display: grid;
-  justify-items: center;
-  gap: clamp(0.4rem, 1.2vw, 0.8rem);
   margin: 0;
+  display: flex;
+  justify-content: center;
 }
 
-.hero__abha {
-  font-family: var(--display);
-  font-size: clamp(4.4rem, 17vw, 15rem);
-  font-weight: 300;
-  line-height: 0.82;
-  letter-spacing: 0.03em;
-  text-indent: 0.03em;
-  color: var(--ink-900);
-}
-
-.hero__engicon {
-  font-family: var(--ui);
-  font-size: clamp(0.62rem, 1.5vw, 1.05rem);
-  font-weight: 500;
-  letter-spacing: 0.78em;
-  text-indent: 0.78em;
-  text-transform: uppercase;
-  color: var(--ink-800);
-  text-shadow: 0 0 22px rgba(251, 247, 240, 0.9);
+/* The company's own lockup: ABHA over ENGICON. It is 2.49:1, so the width
+   is the only dimension worth setting -- every height is a width in
+   disguise. The cream halo is the same one the type-set wordmark used. */
+.hero__logo {
+  display: block;
+  width: clamp(300px, 62vw, 760px);
+  height: auto;
+  filter: drop-shadow(0 0 20px rgba(251, 247, 240, 0.9));
 }
 
 .hero__rule {
@@ -785,13 +762,8 @@ onUnmounted(() => {
     justify-content: center;
   }
 
-  .hero__abha {
-    font-size: clamp(3.9rem, 22vw, 6.4rem);
-  }
-
-  .hero__engicon {
-    letter-spacing: 0.6em;
-    text-indent: 0.6em;
+  .hero__logo {
+    width: clamp(280px, 82vw, 460px);
   }
 
   .hero__intro {
@@ -835,12 +807,8 @@ onUnmounted(() => {
 }
 
 @media (max-height: 700px) and (min-width: 761px) {
-  .hero__emblem {
-    display: none;
-  }
-
-  .hero__abha {
-    font-size: clamp(3.4rem, 11vw, 7.5rem);
+  .hero__logo {
+    width: clamp(280px, 44vw, 560px);
   }
 
   .hero__intro {
