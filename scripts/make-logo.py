@@ -27,6 +27,17 @@ Writes into public/images/brand/:
     logo-abha-*.png    the ABHA line alone    for small sizes and the tab icon
     logo-mark-a-*.png  the first A alone      the tab / app icon monogram
 
+and, from the same matte, one cut per in-parent project into
+public/projects/<name>/images/brand/:
+
+    bimla/logo-cream.png   #f3ecdf   Bimla's --on-dark
+    sga/logo-cream.png     #f1e9db   SGA's --on-dark
+    sga/logo-ink.png       #101013   SGA's --ink-900, for its ivory About page
+
+The projects get their own cream rather than the parent's sand so the lockup
+sits in each project's typography. Bimla has no light surface carrying the
+logo, so it needs no ink cut; SGA's About page is the only one.
+
 The ABHA-only crop exists because the full lockup is 2.5:1 -- at a 30px nav
 height its ENGICON line lands under 5px and turns to mush. The short form is
 what reads at that size.
@@ -52,6 +63,14 @@ GROUND = (231.0, 203.0, 164.0)
 INK = (20, 20, 24)
 CREAM = (243, 235, 221)
 SAND = (231, 204, 164)
+
+# The two projects merged into the parent carry the same lockup, but painted in
+# their own on-dark colour instead of the parent's sand -- so the mark reads as
+# part of that project's typography rather than something dropped into it.
+PROJECTS = {
+    "bimla": {"cream": (243, 236, 223)},                 # --on-dark #f3ecdf
+    "sga": {"cream": (241, 233, 219), "ink": (16, 16, 19)},  # #f1e9db / --ink-900
+}
 
 # The two lines of the lockup, as bands of ink rows in the 1024 canvas.
 ABHA_BAND = (397, 532)
@@ -132,6 +151,14 @@ def main() -> None:
         paint(full, colour).save(BRAND / f"logo-{name}.png")
         paint(abha, colour).save(BRAND / f"logo-abha-{name}.png")
         paint(letter, colour).save(BRAND / f"logo-mark-a-{name}.png")
+
+    # The projects' own cuts, from the same matte.
+    for project, colours in PROJECTS.items():
+        out = PUB / "projects" / project / "images" / "brand"
+        out.mkdir(parents=True, exist_ok=True)
+        for name, colour in colours.items():
+            paint(full, colour).save(out / f"logo-{name}.png")
+        print(f"project  {project}: {', '.join(sorted(colours))}")
 
     for f in sorted(BRAND.glob("logo-*.png")):
         print(f"  {f.name:24} {f.stat().st_size / 1024:6.1f} KB")

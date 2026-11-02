@@ -3,11 +3,15 @@
     <div class="shell">
       <div class="footer__top">
         <div class="footer__brand">
-          <img :src="asset('images/brochure/emblem.png')" alt="" class="footer__mark" width="40" height="50" />
-          <div>
-            <p class="footer__brand-name">ABHA ENGICON</p>
-            <p class="footer__brand-sub">Pvt. Ltd. · Since {{ new Date().getFullYear() - brand.years }}</p>
-          </div>
+          <img
+            :src="asset('images/brand/logo-cream.png')"
+            alt="Abha Engicon"
+            class="footer__mark"
+            width="581"
+            height="233"
+            loading="lazy"
+          />
+          <p class="footer__brand-sub">Pvt. Ltd. · Since {{ new Date().getFullYear() - brand.years }}</p>
         </div>
 
         <p class="footer__motto">{{ brand.motto }}</p>
@@ -43,14 +47,13 @@
       <div class="footer__group">
         <div class="footer__group-id">
           <img
-            :src="asset('images/brand/emblem-sand.png')"
-            alt=""
+            :src="asset('images/brand/logo-cream.png')"
+            alt="Abha Engicon Group"
             class="footer__group-mark"
-            width="419"
-            height="460"
+            width="581"
+            height="233"
             loading="lazy"
           />
-          <p class="footer__group-label">Abha Engicon <span>Group</span></p>
         </div>
 
         <nav class="footer__group-links" aria-label="Abha Engicon group">
@@ -124,23 +127,19 @@ const go = (id) => {
   border-bottom: 1px solid rgba(243, 236, 223, 0.12);
 }
 
+/* The lockup is the brand now, so the block stacks instead of sitting side by
+   side: mark on top, the legal line under it. The mark is 2.49:1, so height is
+   the only dimension worth setting. */
 .footer__brand {
   display: flex;
-  align-items: center;
-  gap: 0.85rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.7rem;
 }
 
 .footer__mark {
-  width: 32px;
-  height: auto;
-}
-
-.footer__brand-name {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  letter-spacing: 0.24em;
-  color: var(--gold-300);
-  line-height: 1;
+  width: auto;
+  height: 38px;
 }
 
 .footer__brand-sub {
@@ -148,7 +147,6 @@ const go = (id) => {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--on-dark-faint);
-  margin-top: 0.4rem;
 }
 
 .footer__motto {
@@ -230,27 +228,13 @@ const go = (id) => {
   gap: 0.6rem;
 }
 
+/* The lockup is 2.49:1, so it is set by height. 30px is as small as it goes
+   before the ENGICON line stops reading as letters. */
 .footer__group-mark {
   width: auto;
-  height: 22px;
+  height: 30px;
   flex-shrink: 0;
-  opacity: 0.8;
-}
-
-.footer__group-label {
-  font-size: 0.58rem;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-indent: 0.24em;
-  text-transform: uppercase;
-  color: rgba(243, 236, 223, 0.7);
-}
-
-.footer__group-label span {
-  margin-left: 0.5rem;
-  padding-left: 0.5rem;
-  border-left: 1px solid rgba(210, 175, 94, 0.35);
-  color: var(--gold-500);
+  opacity: 0.9;
 }
 
 .footer__group-links {

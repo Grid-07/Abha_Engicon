@@ -1,9 +1,10 @@
 <template>
   <header class="nav" :class="{ 'nav--solid': solid, 'nav--open': open }">
     <div class="nav__inner shell shell--wide">
-      <!-- Two links, not one: the emblem is the group's mark and goes to the
-           Abha Engicon home page; the project name is the way to this
-           project's own top. -->
+      <!-- One image, the company's own lockup, carried exactly as the parent
+           site carries it. It is the group's mark, so it goes to the Abha
+           Engicon home page; the labelled way back sits in the actions below
+           for anyone who does not read a logo as a link. -->
       <div class="brand">
         <router-link
           to="/"
@@ -13,21 +14,12 @@
           @click="close"
         >
           <img
-            :src="asset('images/brand/emblem-sand.png')"
+            :src="asset('images/brand/logo-cream.png')"
             alt=""
             class="brand__mark"
-            width="419"
-            height="460"
+            width="581"
+            height="233"
           />
-        </router-link>
-        <router-link
-          to="/shri-ganesh-arpan"
-          class="brand__text"
-          aria-label="Shri Ganesh Arpan — home"
-          @click="close"
-        >
-          <span class="brand__name">ABHA</span>
-          <span class="brand__sub">Shri Ganesh Arpan</span>
         </router-link>
       </div>
 
@@ -39,8 +31,8 @@
 
       <div class="nav__actions">
         <!-- The way out of the project and back to the group. Deliberately
-             labelled: the brand above already reads ABHA, but a visitor who
-             wants the other project should not have to guess that the emblem
+             labelled: the lockup above leaves the project too, but a visitor
+             who wants the other project should not have to guess that a logo
              is a link to somewhere else entirely. -->
         <router-link to="/" class="nav__back">
           <span class="nav__back-arrow" aria-hidden="true">&larr;</span>
@@ -213,25 +205,26 @@ onUnmounted(() => {
 }
 
 /* --- Brand lockup ------------------------------------------------------- */
-/* Mirrors the parent site's lockup exactly: same emblem size, same wordmark
-   size and tracking. Only the second line changes. */
+/* The company's own lockup, the same asset the parent site uses. It is
+   2.49:1, so height is the only dimension worth setting. 34px is where the
+   ENGICON line still resolves into letters rather than a smear. */
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.62rem;
   margin-right: auto;
   flex-shrink: 0;
   color: var(--gold-100);
 }
 
-/* Emblem = group link. Padded, negatively margined box gives it a comfortable
-   hit area without shifting the lockup. */
+/* The lockup is the group link. Padded, negatively margined box gives it a
+   comfortable hit area without shifting it; the radius is a soft rectangle
+   rather than a circle, because the mark is wider than it is tall. */
 .brand__mark-link {
   display: inline-flex;
   align-items: center;
   padding: 7px;
   margin: -7px;
-  border-radius: 50%;
+  border-radius: 8px;
   flex-shrink: 0;
   transition: background 0.35s var(--ease), box-shadow 0.35s var(--ease);
 }
@@ -244,45 +237,8 @@ onUnmounted(() => {
 
 .brand__mark {
   width: auto;
-  height: 30px;
+  height: 34px;
   flex-shrink: 0;
-  transition: transform 0.35s var(--ease);
-}
-
-.brand__mark-link:hover .brand__mark {
-  transform: scale(1.07);
-}
-
-.brand__text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.22rem;
-  line-height: 1;
-}
-
-.brand__text:hover .brand__sub {
-  color: var(--gold-200);
-}
-
-.brand__name {
-  font-family: var(--font-display);
-  font-size: 1.42rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-indent: 0.16em;
-  color: var(--gold-200);
-}
-
-.brand__sub {
-  font-family: var(--font-sans);
-  font-size: 0.48rem;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-indent: 0.2em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: rgba(241, 233, 219, 0.66);
-  transition: color 0.35s var(--ease);
 }
 
 /* --- Links -------------------------------------------------------------- */
@@ -561,18 +517,8 @@ onUnmounted(() => {
 }
 
 @media (max-width: 420px) {
-  .brand__name {
-    font-size: 1.18rem;
-  }
-
-  .brand__sub {
-    font-size: 0.38rem;
-    letter-spacing: 0.18em;
-    text-indent: 0.18em;
-  }
-
   .brand__mark {
-    height: 26px;
+    height: 30px;
   }
 }
 </style>

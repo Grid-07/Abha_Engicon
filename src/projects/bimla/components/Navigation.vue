@@ -3,9 +3,10 @@
     <div class="nav__progress" :style="{ transform: `scaleX(${progress})` }"></div>
 
     <div class="nav__inner">
-      <!-- The lockup is two links, not one: the emblem is the group's mark, so
-           it leaves the project and lands on the Abha Engicon home page; the
-           project name beside it stays the way to this project's own top. -->
+      <!-- One image, the company's own lockup, carried exactly as the parent
+           site carries it. It is the group's mark, so it leaves the project
+           and lands on the Abha Engicon home page; the labelled way back sits
+           in the actions below for anyone who does not read a logo as a link. -->
       <div class="brand">
         <router-link
           to="/"
@@ -15,21 +16,12 @@
           @click="close"
         >
           <img
-            :src="asset('images/brand/emblem-sand.png')"
+            :src="asset('images/brand/logo-cream.png')"
             alt=""
             class="brand__mark"
-            width="419"
-            height="460"
+            width="581"
+            height="233"
           />
-        </router-link>
-        <router-link
-          to="/bimla-mangal-gardens"
-          class="brand__text"
-          aria-label="Bimal Mangal Gardens — home"
-          @click="close"
-        >
-          <span class="brand__name">ABHA</span>
-          <span class="brand__sub">Bimal Mangal Gardens</span>
         </router-link>
       </div>
 
@@ -48,8 +40,9 @@
 
       <div class="nav__actions">
         <!-- The way out of the project and back to the group. Labelled on
-             purpose: the brand already reads ABHA, but a visitor who wants the
-             other project should not have to guess that the emblem leaves. -->
+             purpose: the lockup above leaves the project too, but a visitor who
+             wants the other project should not have to guess that a logo
+             doubles as a link somewhere else. -->
         <router-link to="/" class="nav__back">
           <span class="nav__back-arrow" aria-hidden="true">&larr;</span>
           <span>Abha Engicon</span>
@@ -250,23 +243,24 @@ watch(() => route.path, () => {
   gap: clamp(1rem, 3vw, 2.5rem);
 }
 
-/* Brand — mirrors the parent site's lockup exactly: same emblem size, same
-   wordmark size and tracking. Only the second line changes. */
+/* Brand — the company's own lockup, the same asset the parent site uses.
+   It is 2.49:1, so height is the only dimension worth setting. 34px is where
+   the ENGICON line still resolves into letters rather than a smear. */
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.62rem;
   flex-shrink: 0;
 }
 
-/* Emblem = group link. The padded, negative-margined box gives it a 44px-ish
-   hit area without moving the lockup a pixel. */
+/* The lockup is the group link. The padded, negative-margined box gives it a
+   comfortable hit area without moving it a pixel; the radius is a soft
+   rectangle rather than a circle, because the mark is wider than it is tall. */
 .brand__mark-link {
   display: inline-flex;
   align-items: center;
   padding: 7px;
   margin: -7px;
-  border-radius: 50%;
+  border-radius: 8px;
   flex-shrink: 0;
   transition: background 0.35s var(--ease), box-shadow 0.35s var(--ease);
 }
@@ -279,45 +273,8 @@ watch(() => route.path, () => {
 
 .brand__mark {
   width: auto;
-  height: 30px;
+  height: 34px;
   flex-shrink: 0;
-  transition: transform 0.35s var(--ease);
-}
-
-.brand__mark-link:hover .brand__mark {
-  transform: scale(1.07);
-}
-
-.brand__text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.22rem;
-  line-height: 1;
-}
-
-.brand__text:hover .brand__sub {
-  color: var(--gold-300);
-}
-
-.brand__name {
-  font-family: var(--font-display);
-  font-size: 1.42rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-indent: 0.16em;
-  color: var(--gold-300);
-}
-
-.brand__sub {
-  font-family: var(--font-sans);
-  font-size: 0.48rem;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-indent: 0.2em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: rgba(243, 236, 223, 0.72);
-  transition: color 0.3s var(--ease);
 }
 
 /* Links */
@@ -576,8 +533,8 @@ watch(() => route.path, () => {
     display: flex;
   }
 
-  .brand__name {
-    font-size: 1.1rem;
+  .brand__mark {
+    height: 30px;
   }
 }
 </style>

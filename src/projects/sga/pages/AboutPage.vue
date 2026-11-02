@@ -12,7 +12,13 @@
       <div class="shell">
         <div class="about__grid">
           <div class="about__mark" v-reveal:left>
-            <img :src="asset('images/brochure/abha-logo-dark.png')" :alt="brand.parentFull" loading="lazy" />
+            <img
+              :src="asset('images/brand/logo-ink.png')"
+              :alt="brand.parentFull"
+              width="581"
+              height="233"
+              loading="lazy"
+            />
             <span class="about__est">15 years · Biharsharif &amp; Ranchi</span>
           </div>
 

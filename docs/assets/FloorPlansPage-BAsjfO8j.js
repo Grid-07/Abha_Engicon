@@ -1,0 +1,1 @@
+import{N as o,C as e,F as t}from"./Footer-DrtcDy-2.js";import{F as r}from"./FloorPlans-DZ-L_lGU.js";import{c as s,b as a,a as n,o as c}from"./index-BLCA7RbY.js";import"./project-Bfar1qh1.js";const i={class:"page page--inner"},F={__name:"FloorPlansPage",setup(l){return(m,p)=>(c(),s("div",i,[a(o),n("main",null,[a(r),a(e)]),a(t)]))}};export{F as default};

@@ -40,7 +40,7 @@
           </ul>
 
           <div class="salient__seal">
-            <img :src="asset('images/brochure/emblem-gold.png')" alt="" width="34" height="34" />
+            <img :src="asset('images/brand/logo-cream.png')" alt="Abha Engicon" width="581" height="233" />
             <div>
               <strong>RERA approved</strong>
               <span>{{ brand.credai }}</span>
@@ -216,9 +216,11 @@ onMounted(() => {
   border-top: 1px solid rgba(241, 233, 219, 0.12);
 }
 
+/* The lockup is 2.49:1, so it is set by height. 30px is as small as it goes
+   before the ENGICON line stops reading as letters. */
 .salient__seal img {
-  width: 30px;
-  height: auto;
+  width: auto;
+  height: 30px;
   opacity: 0.9;
 }
 

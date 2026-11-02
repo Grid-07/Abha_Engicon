@@ -6,11 +6,11 @@
       <div class="footer__top">
         <div class="footer__brand">
           <img
-            :src="asset('images/brochure/abha-logo-light.png')"
+            :src="asset('images/brand/logo-cream.png')"
             :alt="brand.parentFull"
             class="footer__logo"
-            width="132"
-            height="66"
+            width="581"
+            height="233"
             loading="lazy"
           />
           <p class="footer__project">{{ brand.name }}</p>
@@ -55,14 +55,13 @@
       <div class="footer__group">
         <div class="footer__group-id">
           <img
-            :src="asset('images/brand/emblem-sand.png')"
-            alt=""
+            :src="asset('images/brand/logo-cream.png')"
+            alt="Abha Engicon Group"
             class="footer__group-mark"
-            width="419"
-            height="460"
+            width="581"
+            height="233"
             loading="lazy"
           />
-          <p class="footer__group-label">Abha Engicon <span>Group</span></p>
         </div>
 
         <nav class="footer__group-links" aria-label="Abha Engicon group">
@@ -128,8 +127,10 @@ const explore = [
 }
 
 /* --- Brand -------------------------------------------------------------- */
+/* The lockup is 2.49:1, so width is the dimension that sets it. 132px keeps
+   the block the same footprint the old 132x66 mark had. */
 .footer__logo {
-  width: 118px;
+  width: 132px;
   height: auto;
   opacity: 0.92;
 }
@@ -226,27 +227,13 @@ const explore = [
   gap: 0.6rem;
 }
 
+/* The lockup is 2.49:1, so it is set by height. 30px is as small as it goes
+   before the ENGICON line stops reading as letters. */
 .footer__group-mark {
   width: auto;
-  height: 22px;
+  height: 30px;
   flex-shrink: 0;
-  opacity: 0.8;
-}
-
-.footer__group-label {
-  font-size: 0.58rem;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-indent: 0.24em;
-  text-transform: uppercase;
-  color: rgba(241, 233, 219, 0.7);
-}
-
-.footer__group-label span {
-  margin-left: 0.5rem;
-  padding-left: 0.5rem;
-  border-left: 1px solid rgba(193, 160, 116, 0.35);
-  color: var(--gold-500);
+  opacity: 0.9;
 }
 
 .footer__group-links {
