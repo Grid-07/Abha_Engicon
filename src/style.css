@@ -217,9 +217,9 @@ h3 {
   padding-inline: var(--gutter);
 }
 
-.section {
+/* .section {
   padding-block: var(--section);
-}
+} */
 
 .section--tight {
   padding-block: clamp(3rem, 7vw, 5.5rem);

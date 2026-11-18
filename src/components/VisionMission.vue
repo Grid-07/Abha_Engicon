@@ -18,9 +18,9 @@ import { about } from '../data/company'
 </template>
 
 <style scoped>
+/* padding-bottom: var(--section); */
 .vm {
   background: var(--sand-50);
-  padding-bottom: var(--section);
 }
 
 .vm__grid {
