@@ -13,7 +13,7 @@ const year = new Date().getFullYear()
         <a href="#top" class="ft__mark" aria-label="Abha Engicon — top of page">
           <img
             class="ft__logo"
-            :src="asset('images/brand/logo-cream.png')"
+            :src="asset('images/brand/logo-sand.png')"
             alt=""
             width="581"
             height="233"
@@ -26,7 +26,7 @@ const year = new Date().getFullYear()
 
       <div class="ft__cols">
         <div class="ft__col">
-          <p class="ft__h">Now selling</p>
+          <p class="ft__h">Projects</p>
           <!-- In-app routes now, not the standalone deployments: these are the
                same two projects, served from this domain. The arrow changes
                from the outbound "leaves the site" mark to a plain one. -->
@@ -88,7 +88,8 @@ const year = new Date().getFullYear()
   display: block;
 }
 
-/* The company's own lockup, cream on the dark foot. It is 2.49:1, so the
+/* The company's own lockup, in the logo's own sand rather than the cream
+   recut, which read as a white texture on the dark foot. It is 2.49:1, so the
    width is the only dimension worth setting. */
 .ft__logo {
   display: block;

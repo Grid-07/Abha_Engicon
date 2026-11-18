@@ -4,11 +4,10 @@
       <div class="projects__top">
         <header class="section-head projects__head" v-reveal>
           <p class="eyebrow">Track record</p>
-          <h2 class="h2">Fifteen years,<br />eleven addresses</h2>
+          <h2 class="h2">Eighteen years,<br />1 million+ sqft delivered</h2>
           <div class="rule"></div>
           <p class="lead">
-            Before Bimla Mangal Gardens, Abha Engicon delivered homes across
-            Bihar and Jharkhand — the same engineers, the same site discipline.
+            Before Bimla Mangal Gardens, Abha Engicon directors have delivered 20+ acres of projecs accross 5 diverse districts in india — the same engineers, the same architects, the same invovators, the same luxury.
           </p>
         </header>
 
@@ -18,12 +17,12 @@
             <small>Years building</small>
           </div>
           <div class="projects__stat">
-            <span>{{ previousProjects.length }}</span>
-            <small>Delivered addresses</small>
+            <span>20+</span>
+            <small>Acres</small>
           </div>
           <div class="projects__stat">
-            <span>2</span>
-            <small>States — Bihar &amp; Jharkhand</small>
+            <span>5</span>
+            <small>Diverse Districts</small>
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@
               height="233"
               loading="lazy"
             />
-            <span class="about__est">15 years · Biharsharif &amp; Ranchi</span>
+            <span class="about__est">18 years · Biharsharif &amp; Ranchi</span>
           </div>
 
           <div class="about__body" v-reveal:right>

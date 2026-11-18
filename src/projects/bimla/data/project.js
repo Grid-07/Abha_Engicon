@@ -6,8 +6,8 @@ export const brand = {
   developerFull: 'ABHA ENGICON PVT. LTD.',
   name: 'BIMLA MANGAL GARDENS',
   tagline: 'A Home That You Deserve',
-  motto: 'Discover Your Dream Space… Fusion of Luxury & Comfort',
-  years: 15,
+  motto: 'Discover Your Dream Space Fusion of Luxury & Comfort',
+  years: 18,
   credai: 'CREDAI Bihar Member · BR/PTN/168',
 }
 
@@ -21,25 +21,24 @@ export const contact = {
   email: 'abhaengicon@gmail.com',
   phones: [
     { label: '+91 94610 75805', value: '919461075805' },
-    { label: '+91 85214 56165', value: '918521456165' },
-    { label: '+91 99057 05709', value: '919905705709' },
+    { label: '+91 98806 01510', value: '919880601510' }
   ],
   mapsUrl:
     'https://www.google.com/maps/search/?api=1&query=Bimla+Mangal+Gardens+Maghra+Biharsharif+Nalanda',
 }
 
 export const heroStats = [
-  { value: 15, suffix: '', label: 'Years of Excellence' },
-  { value: 2, suffix: '', label: 'Residential Blocks' },
-  { value: 8, suffix: '', label: 'Homes per Floor' },
-  { value: 10, suffix: '', label: 'Retail Spaces' },
+  { value: 18, suffix: '', label: 'Years of Excellence' },
+  { value: 56, suffix: '', label: 'Premium Homes' },
+  { value: 10, suffix: '+', label: 'Amenities' },
+  { value: 20000, suffix: '+', label: 'Sq.ft' },
 ]
 
 export const about = {
   eyebrow: 'About the Developer',
   title: 'A living experience crafted to admire in Biharsharif, Nalanda',
   body: [
-    'Abha Engicon Private Limited is a real estate and infrastructure company committed to delivering excellence through innovation, precision and trust. With a strong foundation in engineering and construction, we specialise in creating developments that blend modern design with long-lasting quality.',
+    'Abha Engicon Private Limited is a real estate and infrastructure company committed to delivering excellence through innovation, precision and trust. With a strong foundation in engineering and construction, we specialise in creating developments that blend premium design with long-lasting quality.',
     'Driven by a passion for perfection, we focus on building spaces that not only meet expectations but exceed them — whether residential or commercial. Our projects reflect thoughtful planning, superior craftsmanship and a deep understanding of evolving urban lifestyles.',
   ],
   vision:
@@ -59,6 +58,10 @@ export const about = {
 // Residences — every number below is printed in the brochure's area tables.
 // carpet / balcony / bua / sba are in square feet.
 // ---------------------------------------------------------------------------
+// "3 BHK + 2T" already carries two of the three figures the detail panel
+// shows: the bedrooms before BHK and the washrooms after the T. The balcony
+// count is not printed anywhere, so it follows the printed area — the 49 sq ft
+// homes open onto one balcony, the 134-140 sq ft homes onto two.
 const unit = (no, type, carpet, balcony, bua, sba) => ({
   no: String(no).padStart(2, '0'),
   type,
@@ -66,6 +69,9 @@ const unit = (no, type, carpet, balcony, bua, sba) => ({
   balcony,
   bua,
   sba,
+  beds: Number(type.match(/(\d+)\s*BHK/i)?.[1] ?? 0),
+  baths: Number(type.match(/(\d+)\s*T/i)?.[1] ?? 0),
+  balconies: balcony > 100 ? 2 : 1,
 })
 
 export const blocks = [
@@ -166,26 +172,26 @@ export const amenities = [
     image: 'images/brochure/amenity-pool.jpg',
   },
   {
-    icon: 'shop',
-    title: 'Shopping Arcade',
-    text: 'Ten retail spaces at the podium level.',
-    image: 'images/brochure/amenity-retail.jpg',
+    icon: 'Community Hall',
+    title: 'Community Hall',
+    text: 'Spacious community hall for residents.',
+    image: 'images/brochure/amenity-community.jpg',
   },
 ]
 
 export const amenityList = [
   'Video door phone on every main door',
-  'CCTV in floor lobbies & common areas',
-  'Access control at entrance lobbies',
+  'CCTV in common areas',
+  'Intercom facilities',
   'Central security control room',
   'EV charging point in every parking bay',
   'Wi-Fi point in drawing / dining',
-  'Water purifier & geyser points',
+  'Boom barrier with alarmed security',
   'Fire fighting system',
-  '24×7 electrical & water supply',
+  '24×7 power backup',
   'High-speed lifts with lobby',
-  'Dedicated utility & laundry balcony',
-  'Landscaped courtyard & walkways',
+  'Dedicated utility balcony',
+  'Landscaped outdoors',
 ]
 
 export const specifications = [
@@ -277,10 +283,9 @@ export const proximity = [
     group: 'Connectivity',
     icon: 'plane',
     items: [
-      ['Golapur Airport', '1 km'],
       ['Ramchandrapur Bus Stand', '1 km'],
       ['Biharsharif Railway Station', '5 km'],
-      ['DevSurai More', '1 km'],
+      ['Devi Sarai More', '1 km'],
     ],
   },
   {
@@ -299,7 +304,7 @@ export const proximity = [
     items: [
       ['Shitla Mata Mandir, Maghra', '500 m'],
       ['Hiranya Parwat', '1.5 km'],
-      ['Subhas Park', '4 km'],
+      ['Subhosh Park', '4 km'],
     ],
   },
 ]

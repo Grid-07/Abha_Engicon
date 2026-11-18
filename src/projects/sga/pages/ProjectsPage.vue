@@ -21,7 +21,7 @@
 
         <div class="note" v-reveal>
           <p class="quote">
-            “Experience the ‘Arpan’ lifestyle — glorious 15 years of excellence in
+            “Experience the ‘Arpan’ lifestyle — glorious 18 years of excellence in
             crafting luxurious living.”
           </p>
           <router-link to="/shri-ganesh-arpan/about" class="link-underline">

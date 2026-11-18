@@ -10,7 +10,7 @@ export const brand = {
   sub: 'Plush · Peaceful · Pristine',
   presented: 'Presented by Abha Engicon',
   promise:
-    "Experience the 'Arpan' lifestyle — glorious 15 years of excellence in crafting luxurious living.",
+    "Experience the 'Arpan' lifestyle — glorious 18 years of excellence in crafting luxurious living.",
   years: 15,
   credai: 'CREDAI Bihar Member · BR/PTN/168',
 }
@@ -26,8 +26,7 @@ export const contact = {
   website: 'www.abhaengicon.com',
   phones: [
     { label: '+91 94610 75805', value: '919461075805' },
-    { label: '+91 85214 56165', value: '918521456165' },
-    { label: '+91 99057 05709', value: '919905705709' },
+    { label: '+91 93806 01510', value: '919380601510' }
   ],
   whatsapp: '919461075805',
   mapsUrl:
@@ -35,7 +34,7 @@ export const contact = {
 }
 
 export const heroStats = [
-  { value: 15, suffix: '', label: 'Years of Excellence' },
+  { value: 18, suffix: '', label: 'Years of Excellence' },
   { value: 2, suffix: '', label: 'Residential Towers' },
   { value: 22, suffix: '', label: 'Homes' },
   { value: 6, suffix: '', label: 'Unit Layouts' },
@@ -43,7 +42,7 @@ export const heroStats = [
 
 export const about = {
   eyebrow: 'The Parent Company',
-  title: 'Fifteen years of building homes that hold their value',
+  title: 'Eighteen years of building homes that hold their value',
   body: [
     'Abha Engicon Private Limited is a real estate and infrastructure company committed to delivering excellence through innovation, precision and trust. With a strong foundation in engineering and construction, we specialise in developments that blend modern design with long-lasting quality.',
     'Shri Ganesh Arpan is our latest address in Biharsharif — two low-rise towers of two, three and four bedroom homes on the Ekangarsarai Main Road, minutes from schools, hospitals and the market.',
@@ -64,7 +63,9 @@ export const about = {
 // ---------------------------------------------------------------------------
 // Towers — every area below is printed in the brochure's tables (sq. ft.)
 // carpet = RERA / carpet area, balcony = balcony area, bua = built-up area,
-// sbua = super built-up area.
+// sbua = super built-up area. `balconies` is the count read off each unit's own
+// note ("a balcony off the master", "balconies on three sides"); the brochure
+// never prints a number, so this is the plan's own description, not a guess.
 // ---------------------------------------------------------------------------
 export const towers = [
   {
@@ -88,6 +89,7 @@ export const towers = [
         balcony: 69.83,
         bua: 839.36,
         sbua: 1092,
+        balconies: 1,
         iso: 'images/brochure/iso-a1.jpg',
         note: 'Two bedrooms, two toilets, a corner living room and a balcony off the master bedroom.',
       },
@@ -99,6 +101,7 @@ export const towers = [
         balcony: 66.06,
         bua: 989.15,
         sbua: 1286,
+        balconies: 1,
         iso: 'images/brochure/iso-a2.jpg',
         note: 'Three bedrooms with a wide living and dining spine running the depth of the plan.',
       },
@@ -110,6 +113,7 @@ export const towers = [
         balcony: 71.44,
         bua: 1124.85,
         sbua: 1463,
+        balconies: 2,
         iso: 'images/brochure/iso-a3.jpg',
         note: 'The larger three bedroom — separate dining, utility balcony and a study nook.',
       },
@@ -121,6 +125,7 @@ export const towers = [
         balcony: 89.73,
         bua: 1160.19,
         sbua: 1508,
+        balconies: 2,
         iso: 'images/brochure/iso-a4.jpg',
         note: 'Three bedrooms, three toilets and the deepest balcony stack in the block.',
       },
@@ -147,6 +152,7 @@ export const towers = [
         balcony: 126.21,
         bua: 1276.6,
         sbua: 1664,
+        balconies: 3,
         iso: 'images/brochure/iso-b1.jpg',
         note: 'Corner home with balconies on three sides and a 24′-wide living room.',
       },
@@ -158,6 +164,7 @@ export const towers = [
         balcony: 107.7,
         bua: 1244.09,
         sbua: 1616,
+        balconies: 3,
         iso: 'images/brochure/iso-b2.jpg',
         note: 'Mirror plan of 01, with the master suite on the quieter rear face.',
       },
@@ -171,15 +178,13 @@ export const totalHomes = towers.reduce((n, t) => n + t.homes, 0)
 // Highlights — the brochure's own list, nothing invented
 // ---------------------------------------------------------------------------
 export const highlights = [
-  { icon: 'leaf', title: 'Terrace Garden', text: 'A planted roof deck shared by both towers.' },
   { icon: 'ev', title: 'EV-Ready Parking', text: 'Car parking with EV charging provision at every bay.' },
-  { icon: 'tree', title: 'Lush Green Area', text: 'Landscaped setbacks and a planted frontage.' },
   { icon: 'lift', title: 'Lift', text: 'One lift per tower serving every residential floor.' },
   { icon: 'sparkle', title: 'Branded Fittings', text: 'Johnson, Kajaria, Rak, ABB and Schneider throughout.' },
-  { icon: 'shield', title: 'Two-Tier Security', text: 'Guarded gate and floor-level supervision, round the clock.' },
+  { icon: 'shield', title: 'Enhanced Security', text: 'Guarded gate and floor-level supervision, round the clock.' },
   { icon: 'camera', title: 'CCTV', text: 'Coverage across the entrance, lobby and parking.' },
   { icon: 'wind', title: 'Well-Ventilated Rooms', text: 'Cross ventilation in every bedroom and living room.' },
-  { icon: 'power', title: '24×7 Supply', text: 'Round-the-clock electricity and water to every home.' },
+  { icon: 'power', title: '24×7 Power Backup', text: 'Round-the-clock electricity and water to every home.' },
 ]
 
 // ---------------------------------------------------------------------------
@@ -294,15 +299,6 @@ export const proximity = [
     ],
   },
   {
-    group: 'Travel',
-    icon: 'plane',
-    items: [
-      { name: 'Golapur Airport', dist: '1 km' },
-      { name: 'Ramchandarpur Bus Stand', dist: '2.9 km' },
-      { name: 'Biharsharif Railway Station', dist: '5.8 km' },
-    ],
-  },
-  {
     group: 'Shopping & Entertainment',
     icon: 'bag',
     items: [
@@ -321,7 +317,7 @@ export const proximity = [
     icon: 'park',
     items: [
       { name: 'Hiranya Parwat', dist: '1.5 km' },
-      { name: 'Subhas Park', dist: '4.4 km' },
+      { name: 'Subhosh Park', dist: '4.4 km' },
     ],
   },
 ]

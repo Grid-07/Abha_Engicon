@@ -4,15 +4,14 @@
       <div class="projects__grid">
         <div class="projects__intro" v-reveal>
           <span class="eyebrow">Track Record</span>
-          <h2 class="h2">Fifteen years,<br />eight delivered addresses</h2>
+          <h2 class="h2">Eignteen years,<br />1 million+ sqft delivered</h2>
           <p class="lead">
-            Before Shri Ganesh Arpan, the same team handed over eight residential
-            and commercial developments across Biharsharif and Ranchi.
+            Before Shri Ganesh Arpan, the team handed over 1 million sqft in developments across 5 diverse districts in india
           </p>
 
           <div class="projects__count">
-            <span class="num">8</span>
-            <span>completed<br />developments</span>
+            <span class="num">20+</span>
+            <span>completed<br />Acres Delivered</span>
           </div>
         </div>
 
@@ -28,7 +27,7 @@
 
       <div class="projects__cta" v-reveal>
         <p class="quote projects__quote">
-          “Glorious 15 years of excellence in crafting luxurious living.”
+          “Glorious 18 years of excellence in crafting luxurious living.”
         </p>
         <router-link to="/shri-ganesh-arpan/projects" class="btn btn--outline">
           <span>See all projects</span>

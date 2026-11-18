@@ -334,6 +334,7 @@ watch(() => route.path, () => {
   font-size: 0.58rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  white-space: nowrap;
   color: rgba(243, 236, 223, 0.62);
   transition: color 0.3s var(--ease);
 }
@@ -356,6 +357,7 @@ watch(() => route.path, () => {
   gap: 0.45rem;
   font-size: 0.74rem;
   letter-spacing: 0.06em;
+  white-space: nowrap;
   color: rgba(243, 236, 223, 0.85);
   transition: color 0.3s var(--ease);
 }
@@ -374,6 +376,7 @@ watch(() => route.path, () => {
   padding: 0.66rem 1.3rem;
   min-height: 42px;
   font-size: 0.66rem;
+  white-space: nowrap;
 }
 
 /* Burger */
@@ -507,7 +510,10 @@ watch(() => route.path, () => {
   word-break: break-word;
 }
 
-@media (max-width: 1080px) {
+/* The bar has six section links, the back link, the number and the button. Past
+   this width the four of them still fit on one line each; below it the back
+   link and the number's label step aside rather than wrapping. */
+@media (max-width: 1240px) {
   .nav__back {
     display: none;
   }

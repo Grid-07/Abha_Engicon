@@ -68,10 +68,9 @@ function reset() {
       <!-- ------------------------------------------------------- details --- -->
       <div class="enq__side">
         <span class="eyebrow" v-reveal>Get in touch</span>
-        <h2 class="enq__title" v-reveal="60">Come and see the site.</h2>
+        <h2 class="enq__title" v-reveal="60">Come and visit the site.</h2>
         <p class="enq__lede" v-reveal="100">
-          The sales desk is open every day at the Shri Ganesh Arpan site office on the Ekangarsarai
-          Main Road. Call ahead and we will walk you through every open address.
+          The sales desk is open every day at Abha Engicon site office at Shri Ganesh Arpan. Call ahead and we will walk you through every open address.
         </p>
 
         <div class="offices" v-reveal="140">

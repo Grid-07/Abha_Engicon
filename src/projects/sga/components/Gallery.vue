@@ -6,7 +6,7 @@
           <span class="eyebrow">The Project</span>
           <h2 class="h2">Look closer</h2>
           <p class="lead">
-            Renders of both blocks and every furnished layout, at full size.
+            Renders define luxury
           </p>
         </div>
         <p class="gallery-sec__hint">

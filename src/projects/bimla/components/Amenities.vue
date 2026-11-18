@@ -6,8 +6,8 @@
         <h2 class="h2">The courtyard is the clubhouse</h2>
         <div class="rule"></div>
         <p class="lead">
-          Between the two blocks the ground opens into a landscaped deck — pool, play lawn,
-          gym and the shopping arcade all within a short walk of your door.
+          Between the two blocks the ground opens into a landscaped deck — pool, playground,
+           and the terrace contains a fully equipped gym and a community hall.
         </p>
       </header>
 

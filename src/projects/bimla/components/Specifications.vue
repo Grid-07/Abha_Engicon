@@ -3,11 +3,11 @@
     <div class="shell specs__grid">
       <div class="specs__intro">
         <p class="eyebrow" v-reveal>Specifications</p>
-        <h2 class="h2 specs__title" v-reveal="60">Specified, not<br />left to chance</h2>
+        <h2 class="h2 specs__title" v-reveal="60">Specified,<br />every details</h2>
         <div class="rule" v-reveal="90"></div>
         <p class="lead specs__lead" v-reveal="120">
-          Every finish is named — the tile brand, the door shutter, the switch plate.
-          This is what is written into your agreement.
+          Every finish is named — the tile brand, the door shutter, the switch plate,
+          the sanitary, the lifts and more
         </p>
 
         <div class="specs__note" v-reveal="150">
@@ -19,7 +19,7 @@
         </div>
 
         <a href="#enquire" class="btn btn--ghost btn--sm specs__cta" @click.prevent="go('enquire')">
-          <span>Request the full specification</span>
+          <span>Request the full brochure</span>
         </a>
       </div>
 

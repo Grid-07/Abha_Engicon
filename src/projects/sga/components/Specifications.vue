@@ -4,10 +4,6 @@
       <div class="section-head">
         <span class="eyebrow">Specifications</span>
         <h2 class="h2">Built to a specification, not to a price</h2>
-        <p class="lead">
-          The full schedule from the brochure — structure, services and finishes,
-          written the way the drawings were drawn.
-        </p>
       </div>
 
       <div class="specs__grid">

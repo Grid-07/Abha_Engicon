@@ -4,10 +4,6 @@
       <div class="section-head section-head--center">
         <span class="eyebrow">Highlights</span>
         <h2 class="h2">What comes with the address</h2>
-        <p class="lead">
-          Nine commitments, taken straight from the brochure — from the terrace
-          garden on the roof to the EV point in your parking bay.
-        </p>
         <span class="rule"></span>
       </div>
 
@@ -41,7 +37,7 @@
           <span class="eyebrow">Ground Floor</span>
           <h3 class="h3 strip__title">Shops below, homes above</h3>
           <p>
-            Both blocks open onto the Ekangarsarai Main Road, with retail at the
+            Tower 2 open onto the Ekangarsarai Main Road, with retail at the
             base of the buildings. A grocery run is a lift ride and a few steps —
             not a drive.
           </p>

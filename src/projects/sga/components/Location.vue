@@ -3,10 +3,9 @@
     <div class="shell">
       <div class="section-head">
         <span class="eyebrow eyebrow--light">Location</span>
-        <h2 class="h2">Ekangarsarai Main Road, Maghra</h2>
+        <h2 class="h2">Ekangar-Bihar Main Road, Maghra</h2>
         <p class="lead">
-          One kilometre from Golapur Airport, two from Janaki Hospital, and a
-          walk from the schools and the market.
+          Premium on road location with a premium proximity.
         </p>
       </div>
 

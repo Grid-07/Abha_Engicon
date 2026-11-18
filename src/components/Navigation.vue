@@ -221,17 +221,23 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+/* The bar carries a body at every scroll position, not just once the page has
+   moved. The hero is footage: thin dark links and an outline button had nothing
+   to sit on over a bright frame, so the paper plate is always there. */
 .nav {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 100;
+  background: rgba(251, 247, 240, 0.94);
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  box-shadow: 0 1px 0 var(--line);
   transition: background 0.5s var(--ease), box-shadow 0.5s var(--ease);
 }
 
 .nav--solid {
-  background: rgba(251, 247, 240, 0.92);
-  backdrop-filter: blur(14px) saturate(1.1);
-  box-shadow: 0 1px 0 var(--line);
+  background: rgba(251, 247, 240, 0.96);
+  box-shadow: 0 1px 0 var(--line), 0 14px 34px -26px rgba(20, 20, 24, 0.5);
 }
 
 /* Over a dark band the bar flips to sand-on-ink. */

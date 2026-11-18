@@ -4,10 +4,9 @@
       <div class="plans__head">
         <div class="section-head">
           <span class="eyebrow">The Residences</span>
-          <h2 class="h2">Six layouts across two towers</h2>
+          <h2 class="h2">22 premium homes across two towers</h2>
           <p class="lead">
-            Every figure below is from the sanctioned area statement — carpet,
-            balcony, built-up and super built-up. Switch towers to compare.
+            Every figure below is from the sanctioned area statement. Switch towers to compare.
           </p>
         </div>
 
@@ -22,7 +21,6 @@
             @click="pickTower(t.id)"
           >
             <span class="towers__name">{{ t.name }}</span>
-            <span class="towers__meta">{{ t.homes }} homes · {{ t.perFloor }} per floor</span>
           </button>
         </div>
       </div>
@@ -77,17 +75,12 @@
             <p class="detail__note">{{ currentUnit.note }}</p>
           </div>
 
-          <div class="areas">
-            <div v-for="a in areaRows" :key="a.key" class="area">
-              <div class="area__head">
-                <span class="area__label">{{ a.label }}</span>
-                <span class="area__value num">{{ sqft(a.value) }}<em> sq ft</em></span>
-              </div>
-              <div class="area__track">
-                <span class="area__fill" :style="{ width: a.pct + '%' }"></span>
-              </div>
+          <dl class="counts">
+            <div v-for="c in countRows" :key="c.key" class="count">
+              <dd class="count__num">{{ c.value }}</dd>
+              <dt class="count__label">{{ c.label }}</dt>
             </div>
-          </div>
+          </dl>
 
           <button class="btn btn--gold btn--block detail__cta" @click="enquire">
             <span>Enquire about this home</span>
@@ -161,15 +154,18 @@ const select = (i) => {
   activeIndex.value = i
 }
 
-const maxSbua = computed(() => Math.max(...activeTower.value.units.map((u) => u.sbua)))
-
-const areaRows = computed(() => {
+// Bedrooms and washrooms are written into the unit type ("3BHK + 2T"); the
+// balcony count is read off the unit's own note in the data file.
+const countRows = computed(() => {
   const u = currentUnit.value
   return [
-    { key: 'carpet', label: 'RERA / Carpet area', value: u.carpet, pct: (u.carpet / maxSbua.value) * 100 },
-    { key: 'balcony', label: 'Balcony area', value: u.balcony, pct: (u.balcony / maxSbua.value) * 100 },
-    { key: 'bua', label: 'Built-up area', value: u.bua, pct: (u.bua / maxSbua.value) * 100 },
-    { key: 'sbua', label: 'Super built-up', value: u.sbua, pct: (u.sbua / maxSbua.value) * 100 },
+    { key: 'beds', label: 'Bedrooms', value: Number(u.type.match(/(\d+)\s*BHK/i)?.[1] ?? 0) },
+    { key: 'baths', label: 'Washrooms', value: Number(u.type.match(/(\d+)\s*T/i)?.[1] ?? 0) },
+    {
+      key: 'balconies',
+      label: u.balconies === 1 ? 'Balcony' : 'Balconies',
+      value: u.balconies,
+    },
   ]
 })
 
@@ -428,50 +424,37 @@ onUnmounted(() => {
   color: rgba(241, 233, 219, 0.6);
 }
 
-.areas {
-  margin-top: 1.4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
+.counts {
+  margin-top: 1.35rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
 }
 
-.area__head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 0.6rem;
+.count {
+  padding: 0.8rem 0.35rem 0.65rem;
+  text-align: center;
+  border: 1px solid rgba(241, 233, 219, 0.14);
+  border-radius: 8px;
+  background: rgba(241, 233, 219, 0.04);
 }
 
-.area__label {
-  font-size: 0.6rem;
+.count__num {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  line-height: 1;
+  color: var(--gold-200);
+  font-variant-numeric: tabular-nums;
+}
+
+.count__label {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.55rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(241, 233, 219, 0.5);
-}
-
-.area__value {
-  font-size: 0.9rem;
-  color: var(--gold-200);
-}
-
-.area__value em {
-  font-style: normal;
-  font-size: 0.6rem;
-  color: rgba(241, 233, 219, 0.4);
-}
-
-.area__track {
-  height: 2px;
-  margin-top: 0.4rem;
-  background: rgba(241, 233, 219, 0.12);
-  overflow: hidden;
-}
-
-.area__fill {
-  display: block;
-  height: 100%;
-  background: linear-gradient(90deg, var(--gold-600), var(--gold-300));
-  transition: width 0.9s var(--ease);
+  line-height: 1.4;
 }
 
 .detail__cta {

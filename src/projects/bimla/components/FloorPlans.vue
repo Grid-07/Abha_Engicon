@@ -3,12 +3,10 @@
     <div class="shell">
       <header class="section-head section-head--center on-dark" v-reveal>
         <p class="eyebrow">The Residences</p>
-        <h2 class="h2">Eight homes to a floor,<br />every one a corner</h2>
+        <h2 class="h2">56 premium homes,<br />crafted in luxury</h2>
         <div class="rule"></div>
         <p class="lead">
-          Two blocks, a central passage and balconies on both faces — so no two homes
-          look at the same wall. Choose a block and a home number to see its exact areas
-          as printed in the brochure.
+          Two blocks with 20,000 sqft of retail space and 56 premium homes, thoughtfully designed for a premium living with mordern amenities
         </p>
       </header>
 
@@ -74,15 +72,10 @@
           <h3 class="explorer__title">{{ unit.type }}</h3>
           <p class="explorer__sub">Super built-up area <strong>{{ formatNumber(unit.sba) }}</strong> sq ft</p>
 
-          <dl class="areas">
-            <div v-for="row in areaRows" :key="row.key" class="area">
-              <div class="area__top">
-                <dt>{{ row.label }}</dt>
-                <dd>{{ formatNumber(unit[row.key]) }} <em>sq ft</em></dd>
-              </div>
-              <div class="area__bar">
-                <i :style="{ width: (unit[row.key] / maxSba) * 100 + '%' }"></i>
-              </div>
+          <dl class="counts">
+            <div v-for="row in countRows" :key="row.key" class="count">
+              <dd class="count__num">{{ row.value }}</dd>
+              <dt class="count__label">{{ row.label }}</dt>
             </div>
           </dl>
 
@@ -185,14 +178,16 @@ const lightbox = ref({ open: false, src: '', alt: '' })
 
 const block = computed(() => blocks.find((b) => b.id === activeBlock.value))
 const unit = computed(() => block.value.units[unitIndex.value])
-const maxSba = computed(() => Math.max(...block.value.units.map((u) => u.sba)))
 
-const areaRows = [
-  { key: 'carpet', label: 'RERA / Carpet area' },
-  { key: 'balcony', label: 'Balcony area' },
-  { key: 'bua', label: 'Built-up area' },
-  { key: 'sba', label: 'Super built-up area' },
-]
+const countRows = computed(() => [
+  { key: 'beds', label: 'Bedrooms', value: unit.value.beds },
+  { key: 'baths', label: 'Washrooms', value: unit.value.baths },
+  {
+    key: 'balconies',
+    label: unit.value.balconies === 1 ? 'Balcony' : 'Balconies',
+    value: unit.value.balconies,
+  },
+])
 
 const retailTables = [
   { title: 'Ground floor', rows: shops.ground },
@@ -474,52 +469,40 @@ watch(activeBlock, () => {
   font-weight: 500;
 }
 
-.areas {
-  margin: 1.15rem 0 1.25rem;
+/* Bedrooms, washrooms, balconies — three counts, so the old area bars would
+   say nothing. Three columns of numerals read at a glance and survive the
+   narrowest column this panel ever gets. */
+.counts {
+  margin: 1.2rem 0 1.3rem;
   display: grid;
-  gap: 0.7rem;
-}
-
-.area__top {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.5rem;
-  margin-bottom: 0.32rem;
 }
 
-.area__top dt {
-  font-size: 0.66rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--on-dark-faint);
+.count {
+  padding: 0.8rem 0.4rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid rgba(243, 236, 223, 0.12);
+  background: rgba(243, 236, 223, 0.05);
+  text-align: center;
 }
 
-.area__top dd {
-  font-size: 0.84rem;
-  color: #fff;
+.count__num {
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 3vw, 1.9rem);
+  line-height: 1;
+  color: var(--gold-300);
   font-variant-numeric: tabular-nums;
 }
 
-.area__top dd em {
-  font-style: normal;
-  font-size: 0.62rem;
-  color: var(--on-dark-faint);
-}
-
-.area__bar {
-  height: 3px;
-  border-radius: 99px;
-  background: rgba(243, 236, 223, 0.12);
-  overflow: hidden;
-}
-
-.area__bar i {
+.count__label {
   display: block;
-  height: 100%;
-  border-radius: 99px;
-  background: linear-gradient(90deg, var(--gold-600), var(--gold-300));
-  transition: width 0.7s var(--ease);
+  margin-top: 0.4rem;
+  font-size: 0.55rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--on-dark-faint);
+  line-height: 1.4;
 }
 
 .explorer__detail .btn {
@@ -602,11 +585,18 @@ watch(activeBlock, () => {
   opacity: 1;
 }
 
+/* The plate is 0.88:1, so at the old full width it stood 769px tall — taller
+   than a laptop viewport, which meant the plan had to be scrolled to be read
+   and looked cut off. Height now leads: the drawing is capped against the
+   viewport and the frame closes around it, so a whole floor is on screen at
+   once. */
 .plans__viewer {
   position: relative;
-  width: 100%;
-  max-width: 680px;
+  width: fit-content;
+  max-width: min(680px, 100%);
   margin-inline: auto;
+  display: flex;
+  justify-content: center;
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--cream-50);
@@ -616,9 +606,11 @@ watch(activeBlock, () => {
 }
 
 .plans__viewer img {
-  width: 100%;
-  height: auto;
   display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100svh - 200px);
 }
 
 .plans__zoom {
@@ -856,10 +848,6 @@ watch(activeBlock, () => {
 
   .retail__tables {
     grid-template-columns: 1fr;
-  }
-
-  .plans__viewer img {
-    max-height: 62vh;
   }
 
   .table-wrap td,

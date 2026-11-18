@@ -12,7 +12,7 @@
             />
           </div>
           <div class="overview__badge">
-            <span class="overview__badge-num num">15</span>
+            <span class="overview__badge-num num">18</span>
             <span class="overview__badge-label">Years of<br />excellence</span>
           </div>
         </div>
@@ -26,8 +26,7 @@
           <p class="lead">
             Shri Ganesh Arpan sits on the Ekangarsarai Main Road at Maghra — close
             enough that schools, the market and the hospital are a short walk, far
-            enough that the evenings stay quiet. The two blocks are low-rise by
-            design: four homes to a floor in A Tower, two in B Tower.
+            enough that the evenings stay quiet. The two blocks have 22 premium homes.
           </p>
 
           <div class="overview__facts">
@@ -52,11 +51,11 @@
 
       <blockquote class="overview__quote" v-reveal>
         <p class="quote">
-          “A perfect heaven created to cater the need of every member of your family.
+          “A perfect home created to cater the need of every member of your family.
           A place where you nurture the childhood, enjoy the youth and care for the
           elderly to the fullest.”
         </p>
-        <cite>— From the Shri Ganesh Arpan brochure</cite>
+        <cite>— From the directors</cite>
       </blockquote>
     </div>
   </section>
@@ -69,8 +68,8 @@ import { asset } from '../utils/asset'
 const facts = [
   { value: '2', label: 'Towers' },
   { value: '22', label: 'Homes' },
-  { value: '2 & 3', label: 'Bedroom layouts' },
-  { value: 'G + 4', label: 'Floor rise' },
+  { value: '6,000', label: 'sqft retail space' },
+  { value: '2/3', label: 'BHK layouts' },
 ]
 </script>
 

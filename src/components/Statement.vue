@@ -47,9 +47,9 @@ onUnmounted(() => {
   <section class="stmt section--tight lattice" ref="root">
     <div class="shell">
       <p class="stmt__line" v-reveal>
-        We build in Biharsharif and we build small —
-        <em>fewer homes per floor, wider decks,</em>
-        and a sales desk that answers the phone after handover.
+        Designed around the finer aspects of everyday living. Spacious residences, fewer neighbours, expansive decks, 
+        and a lasting commitment to exceptional homeowner care — 
+        all in the heart of Biharsharif.
       </p>
 
       <dl class="stmt__stats">

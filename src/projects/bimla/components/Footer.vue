@@ -11,7 +11,7 @@
             height="233"
             loading="lazy"
           />
-          <p class="footer__brand-sub">Pvt. Ltd. · Since {{ new Date().getFullYear() - brand.years }}</p>
+          <p class="footer__brand-sub">· Since 2008</p>
         </div>
 
         <p class="footer__motto">{{ brand.motto }}</p>
@@ -29,8 +29,8 @@
 
         <div class="footer__col">
           <h4>Visit</h4>
-          <p>{{ contact.siteAddress }}</p>
-          <p class="footer__muted">{{ contact.siteOffice }}</p>
+          <p>Site: {{ contact.siteAddress }}</p>
+          <p class="footer__muted">Office: {{ contact.siteOffice }}</p>
         </div>
 
         <div class="footer__col">

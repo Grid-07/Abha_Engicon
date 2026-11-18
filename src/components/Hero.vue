@@ -1,11 +1,8 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { asset } from '../utils/asset'
-import { brand, live } from '../data/company'
 import flagship from '../data/flagship.json'
 import AppIcon from './AppIcon.vue'
-
-const flagshipProject = live[0]
 
 const heroEl = ref(null)
 const videoEl = ref(null)
@@ -190,7 +187,6 @@ onUnmounted(() => {
         @error="videoOn = false"
       ></video>
     </div>
-    <div class="hero__veil" aria-hidden="true"></div>
 
     <div class="hero__inner shell">
       <h1 class="hero__mark">
@@ -205,9 +201,6 @@ onUnmounted(() => {
 
       <div class="hero__rule" aria-hidden="true"></div>
 
-      <p class="hero__line">{{ brand.tagline }}</p>
-      <p class="hero__intro">{{ brand.intro }}</p>
-
       <div class="hero__actions">
         <a href="#projects" class="btn">
           Explore the portfolio
@@ -217,22 +210,14 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- Paused state: the whole frame is the play button. -->
+    <!-- Paused state: the whole frame is the play button. The ring is the
+         affordance; no label, because the hero carries no copy. -->
     <div v-if="videoOn && videoReady && !playing" class="hero__paused" aria-hidden="true">
       <span class="hero__paused-ring"><AppIcon name="play" :size="20" /></span>
-      <span class="hero__paused-text">Play the film</span>
     </div>
 
-    <div class="hero__strip">
-      <a class="hero__credit" :href="flagshipProject.href">
-        <span class="hero__dot" aria-hidden="true"></span>
-        <span class="hero__credit-text">
-          Filmed at <strong>{{ flagshipProject.name }}</strong> — our flagship address, now selling
-        </span>
-        <AppIcon name="arrow-up-right" :size="12" />
-      </a>
-
-      <div v-if="videoOn" class="hero__player">
+    <div v-if="videoOn" class="hero__strip">
+      <div class="hero__player">
         <button
           class="hero__pbtn"
           type="button"
@@ -273,11 +258,6 @@ onUnmounted(() => {
         >
           <AppIcon :name="cinema ? 'shrink' : 'expand'" :size="12" />
         </button>
-      </div>
-
-      <div v-else class="hero__cue">
-        <span>Scroll</span>
-        <AppIcon name="arrow-down" :size="13" />
       </div>
     </div>
   </section>
@@ -324,33 +304,8 @@ onUnmounted(() => {
   opacity: 1;
 }
 
-/* The film is the hero, so the veil does the smallest possible job: a tight
-   plate behind the wordmark, a wide whisper of warm paper to hold the thin
-   serif against the sky, and a fade at the foot for the player bar. Everything
-   outside the type block is left clear — that is the part worth looking at. */
-.hero__veil {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  transition: opacity 0.6s var(--ease);
-  background:
-    radial-gradient(
-      48% 36% at 50% 42%,
-      rgba(251, 247, 240, 0.92) 0%,
-      rgba(251, 247, 240, 0.85) 40%,
-      rgba(251, 247, 240, 0.46) 68%,
-      rgba(251, 247, 240, 0) 88%
-    ),
-    radial-gradient(
-      80% 58% at 50% 46%,
-      rgba(251, 247, 240, 0.4) 0%,
-      rgba(251, 247, 240, 0.14) 56%,
-      rgba(251, 247, 240, 0) 76%
-    ),
-    linear-gradient(180deg, rgba(243, 235, 221, 0.66) 0%, rgba(231, 204, 164, 0) 15%),
-    linear-gradient(0deg, rgba(251, 247, 240, 0.94) 0%, rgba(251, 247, 240, 0.4) 11%, rgba(231, 204, 164, 0) 30%);
-}
-
+/* The film is the hero. There is no veil: the only thing laid over it is the
+   mark and the two doors into the site, so the footage reads at full strength. */
 /* --------------------------------------------------------------- inner --- */
 .hero__inner {
   position: relative;
@@ -370,12 +325,14 @@ onUnmounted(() => {
 
 /* The company's own lockup: ABHA over ENGICON. It is 2.49:1, so the width
    is the only dimension worth setting -- every height is a width in
-   disguise. The cream halo is the same one the type-set wordmark used. */
+   disguise. No cream halo any more: the veil is gone, so the mark carries a
+   soft dark cast instead, which separates black letterforms from a bright
+   frame without laying a white plate over the film. */
 .hero__logo {
   display: block;
   width: clamp(300px, 62vw, 760px);
   height: auto;
-  filter: drop-shadow(0 0 20px rgba(251, 247, 240, 0.9));
+  filter: drop-shadow(0 2px 3px rgba(8, 10, 14, 0.3)) drop-shadow(0 14px 40px rgba(8, 10, 14, 0.32));
 }
 
 .hero__rule {
@@ -384,29 +341,6 @@ onUnmounted(() => {
   background: var(--ink-900);
   opacity: 0.4;
   margin-block: clamp(1.4rem, 3.6vh, 2.4rem);
-}
-
-.hero__line {
-  font-family: var(--display);
-  font-size: clamp(1.28rem, 2.5vw, 1.95rem);
-  font-weight: 400;
-  letter-spacing: -0.005em;
-  color: var(--ink-900);
-  max-width: 44ch;
-  text-wrap: balance;
-  /* A cream halo holds the thin serif against the facade without needing a
-     heavier plate over the film. */
-  text-shadow: 0 0 26px rgba(251, 247, 240, 0.95), 0 0 60px rgba(251, 247, 240, 0.7);
-}
-
-.hero__intro {
-  margin-top: 0.9rem;
-  font-size: clamp(0.88rem, 1.1vw, 0.98rem);
-  line-height: 1.72;
-  color: var(--ink-900);
-  max-width: 40ch;
-  text-wrap: balance;
-  text-shadow: 0 0 14px rgba(251, 247, 240, 1), 0 0 34px rgba(251, 247, 240, 0.9);
 }
 
 .hero__actions {
@@ -439,7 +373,7 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.34rem 0.9rem 0.34rem 0.34rem;
+  padding: 0.34rem;
   border-radius: 999px;
   border: 1px solid rgba(251, 247, 240, 0.4);
   background: rgba(16, 16, 20, 0.42);
@@ -461,15 +395,6 @@ onUnmounted(() => {
   border: 1px solid rgba(251, 247, 240, 0.5);
 }
 
-.hero__paused-text {
-  font-size: 0.55rem;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-indent: 0.22em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -485,7 +410,7 @@ onUnmounted(() => {
   margin-top: auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 1.5rem;
   padding: 0.85rem var(--gutter);
   border-top: 1px solid rgba(20, 20, 24, 0.14);
@@ -493,59 +418,6 @@ onUnmounted(() => {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: background-color 0.5s var(--ease), border-color 0.5s var(--ease);
-}
-
-.hero__credit {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 0.6rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-600);
-  transition: color 0.35s var(--ease), opacity 0.4s var(--ease);
-  min-width: 0;
-}
-
-.hero__credit:hover {
-  color: var(--ink-900);
-}
-
-.hero__credit strong {
-  font-weight: 500;
-  color: var(--ink-900);
-}
-
-.hero__credit svg {
-  opacity: 0.6;
-  transition: transform 0.35s var(--ease);
-  flex-shrink: 0;
-}
-
-.hero__credit:hover svg {
-  transform: translate(2px, -2px);
-}
-
-.hero__dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #6f7d4f;
-  flex-shrink: 0;
-  animation: pulse 2.6s var(--ease) infinite;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(111, 125, 79, 0.45);
-  }
-  70% {
-    box-shadow: 0 0 0 7px rgba(111, 125, 79, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(111, 125, 79, 0);
-  }
 }
 
 /* -------------------------------------------------------------- player --- */
@@ -642,36 +514,7 @@ onUnmounted(() => {
   color: var(--ink-900);
 }
 
-.hero__cue {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.55rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: var(--ink-500);
-  flex-shrink: 0;
-}
-
-.hero__cue svg {
-  animation: nudge 2.4s var(--ease) infinite;
-}
-
-@keyframes nudge {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(4px);
-  }
-}
-
 /* -------------------------------------------------------- focus mode --- */
-.hero.is-cinema .hero__veil {
-  opacity: 0;
-}
-
 .hero.is-cinema .hero__inner {
   opacity: 0;
   transform: translateY(14px);
@@ -683,11 +526,6 @@ onUnmounted(() => {
   border-top-color: rgba(251, 247, 240, 0.14);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-}
-
-.hero.is-cinema .hero__credit {
-  opacity: 0;
-  pointer-events: none;
 }
 
 .hero.is-cinema .hero__pbtn {
@@ -723,8 +561,6 @@ onUnmounted(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero__dot,
-  .hero__cue svg,
   .hero__paused {
     animation: none;
   }
@@ -735,27 +571,6 @@ onUnmounted(() => {
 }
 
 /* ------------------------------------------------------------ responsive --- */
-@media (max-width: 900px) {
-  .hero__veil {
-    background:
-      radial-gradient(
-        62% 32% at 50% 40%,
-        rgba(251, 247, 240, 0.92) 0%,
-        rgba(251, 247, 240, 0.85) 40%,
-        rgba(251, 247, 240, 0.44) 70%,
-        rgba(251, 247, 240, 0) 90%
-      ),
-      radial-gradient(
-        92% 52% at 50% 42%,
-        rgba(251, 247, 240, 0.34) 0%,
-        rgba(251, 247, 240, 0.1) 58%,
-        rgba(251, 247, 240, 0) 78%
-      ),
-      linear-gradient(180deg, rgba(243, 235, 221, 0.64) 0%, rgba(231, 204, 164, 0) 14%),
-      linear-gradient(0deg, rgba(251, 247, 240, 0.94) 0%, rgba(251, 247, 240, 0.42) 12%, rgba(231, 204, 164, 0) 32%);
-  }
-}
-
 @media (max-width: 760px) {
   .hero {
     min-height: calc(100svh - 62px);
@@ -764,11 +579,6 @@ onUnmounted(() => {
 
   .hero__logo {
     width: clamp(280px, 82vw, 460px);
-  }
-
-  .hero__intro {
-    font-size: 0.86rem;
-    max-width: 34ch;
   }
 
   .hero__actions {
@@ -785,11 +595,6 @@ onUnmounted(() => {
     padding-block: 0.7rem;
   }
 
-  /* The credit is decoration; on a phone the player is the point. */
-  .hero__credit {
-    display: none;
-  }
-
   .hero__player {
     width: 100%;
     justify-content: space-between;
@@ -800,19 +605,11 @@ onUnmounted(() => {
     width: auto;
     flex: 1;
   }
-
-  .hero__cue {
-    display: none;
-  }
 }
 
 @media (max-height: 700px) and (min-width: 761px) {
   .hero__logo {
     width: clamp(280px, 44vw, 560px);
-  }
-
-  .hero__intro {
-    display: none;
   }
 }
 </style>

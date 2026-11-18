@@ -4,8 +4,8 @@
       <div class="about__media" v-reveal:left>
         <div class="about__frame"></div>
         <img
-          :src="asset('images/brochure/about-portrait.jpg')"
-          alt="Bimla Mangal Gardens facade rising above the landscaped pool deck"
+          :src="asset('images/brochure/about-render.jpg')"
+          alt="Bimla Mangal Gardens — the two blocks at dusk, retail plinth lit along the street"
           class="about__img"
           loading="lazy"
           decoding="async"
@@ -80,10 +80,13 @@ import { about, brand } from '../data/project'
   pointer-events: none;
 }
 
+/* The supplied render is landscape, so the frame is 16:10 rather than the old
+   3:4 portrait. A tall frame cropped this elevation down to its central bay;
+   at 16:10 the two blocks and the lit retail plinth both stay in shot. */
 .about__img {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 16 / 10;
   object-fit: cover;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
@@ -225,7 +228,7 @@ import { about, brand } from '../data/project'
   }
 
   .about__img {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 16 / 10;
   }
 
   .about__badge {

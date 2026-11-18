@@ -38,10 +38,10 @@ export const contact = {
 
 export const about = {
   eyebrow: 'The company',
-  title: 'Fifteen years of building, one address at a time',
+  title: 'Eighteen years of crafting luxury',
   body: [
     'Abha Engicon Private Limited is a real estate and infrastructure company committed to delivering excellence through innovation, precision and trust. With a strong foundation in engineering and construction, we specialise in developments that blend modern design with long-lasting quality.',
-    'Our work in Biharsharif is deliberately low-rise and deliberately small. Fewer homes per floor, wider decks, cross-ventilated rooms, and retail at grade so the street outside stays alive after dark.',
+    'Our philosophy is rooted in thoughtful architecture and a more considered way of living. Each development in Biharsharif is designed around spacious residences, expansive private decks, naturally ventilated interiors, and thoughtfully integrated retail spaces — creating an environment where comfort, connectivity, and community come together.',
   ],
   vision:
     'To redefine urban landscapes by creating landmark developments and becoming one of the most trusted and admired real estate companies in Bihar and Jharkhand.',
@@ -70,26 +70,26 @@ export const live = [
     location: 'Biharsharif, Nalanda',
     image: 'images/projects/bimal-mangal-gardens.jpg',
     line: 'Two blocks of homes over a retail plinth, set around a landscaped courtyard and deck pool.',
-    homes: 16,
+    homes: 56,
     facts: [
       ['2', 'Blocks'],
-      ['16', 'Residences'],
-      ['10', 'Retail shops'],
+      ['56', 'Residences'],
+      ['10000+', 'Retail'],
     ],
     route: '/bimla-mangal-gardens',
   },
   {
     slug: 'shri-ganesh-arpan',
     name: 'Shri Ganesh Arpan',
-    status: 'Now selling',
+    status: 'Sold out',
     location: 'Biharsharif, Nalanda',
     image: 'images/projects/shri-ganesh-hero.jpg',
-    line: 'Two low-rise towers of two, three and four bedroom homes on the Ekangarsarai Main Road.',
+    line: 'Premium 2/3 BHK homes on the Ekanggar - Main Road.',
     homes: 22,
     facts: [
       ['2', 'Towers'],
       ['22', 'Homes'],
-      ['6', 'Layouts'],
+      ['6000+', 'sq.ft retail spaces'],
     ],
     route: '/shri-ganesh-arpan',
   },
@@ -105,6 +105,9 @@ export const word = (n) => WORDS[n] || String(n)
 
 export const counts = {
   live: live.length,
+  // Not every address in the list is still on the market, so the "now selling"
+  // counter has to read the status rather than the length.
+  selling: live.filter((p) => p.status === 'Now selling').length,
   homes: live.reduce((n, p) => n + (p.homes || 0), 0),
 }
 
@@ -114,7 +117,7 @@ export const brand = {
   name: 'Abha Engicon',
   wordmark: ['ABHA', 'ENGICON'],
   legal: 'Abha Engicon Pvt. Ltd.',
-  tagline: `${addresses(counts.live)} open in Biharsharif.`,
+  ///tagline: `${addresses(counts.live)} open in Biharsharif.`,
   // No count here on purpose — the tagline directly above already carries it,
   // and repeating "two addresses open" twice reads as a stutter.
   intro:
@@ -124,10 +127,10 @@ export const brand = {
 }
 
 export const stats = [
-  { value: counts.live, suffix: '', label: 'Addresses open today' },
-  { value: counts.homes, suffix: '', label: 'Homes in those addresses' },
-  { value: 15, suffix: '', label: 'Years of the group' },
-  { value: 2, suffix: '', label: 'Offices across Bihar & Jharkhand' },
+  { value: 1, suffix: '+', label: 'Million sq.ft delivered' },
+  { value: 56, suffix: '+', label: 'Addresses' },
+  { value: 18, suffix: '', label: 'Years of the group' },
+  { value: 5, suffix: '', label: 'Diverse Districts' },
 ]
 
 export const disclaimer =

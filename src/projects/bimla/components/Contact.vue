@@ -7,8 +7,8 @@
           <h2 class="h2 enquire__title" v-reveal="60">Book a site visit</h2>
           <div class="rule" v-reveal="90"></div>
           <p class="lead enquire__lead" v-reveal="120">
-            The site office is open daily. Walk the plan, stand on the balcony,
-            then decide — we would rather you saw it first.
+            The site office is always open. Walk in, feel the luxury,
+            then decide — we are happy to serve a visit.
           </p>
 
           <ul class="contact-list" v-reveal="150">

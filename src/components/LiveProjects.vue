@@ -222,12 +222,12 @@ onUnmounted(() => {
     <div class="shell">
       <header class="live__head">
         <div v-reveal>
-          <span class="eyebrow">Now selling · {{ counts.live }} live</span>
-          <h2 class="live__title">{{ word(counts.live) }} addresses, open today.</h2>
+          <span class="eyebrow">Now selling · {{ counts.selling }} live</span>
+          <h2 class="live__title">Prestigious Locations. Exceptional Living</h2>
         </div>
         <p class="lede live__lede" v-reveal="80">
-          Every one is in Biharsharif, low-rise and built to the same specification. Each has its
-          own section of this site — floor plans, unit areas, walkthroughs and the sales desk.
+          A curated collection of low-rise residences across Biharsharif, united by a commitment to architectural distinction, generous spaces, and enduring quality. 
+          Explore each address through its bespoke property details, thoughtfully presented floor plans, residence specifications, and immersive walkthroughs.
         </p>
       </header>
 
@@ -256,7 +256,7 @@ onUnmounted(() => {
           <div class="dev__body">
             <div class="dev__top">
               <span class="dev__num">0{{ i + 1 }}</span>
-              <span class="dev__status">
+              <span class="dev__status" :class="{ 'dev__status--out': p.status !== 'Now selling' }">
                 <i class="dot" aria-hidden="true"></i>
                 {{ p.status }}
               </span>
@@ -431,6 +431,14 @@ onUnmounted(() => {
   background: #6f7d4f;
   box-shadow: 0 0 0 0 rgba(111, 125, 79, 0.5);
   animation: pulse 2.6s var(--ease) infinite;
+}
+
+/* A sold-out address is not a live signal: the dot goes quiet and takes the
+   muted ink of the label instead of pulsing green. */
+.dev__status--out .dot {
+  background: var(--ink-400);
+  animation: none;
+  box-shadow: none;
 }
 
 @keyframes pulse {

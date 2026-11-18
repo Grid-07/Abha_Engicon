@@ -19,7 +19,7 @@
             <span class="location__pin-icon"><AppIcon name="pin" /></span>
             <div>
               <strong>Bimla Mangal Gardens</strong>
-              <span>Maghra, Biharsharif, Nalanda</span>
+              <span>Ward no. 48, Ekangar-Bihar road, Maghra, Biharsharif, Nalanda</span>
             </div>
           </figcaption>
         </figure>
